@@ -1,0 +1,72 @@
+#!/bin/bash
+#
+# Usage: script/bootstrap
+# Description: Get ready to develop iruka
+#
+
+set -e
+
+# this script should be run in project root
+BASE_DIRECTORY=`pwd`
+if [ $(basename $BASE_DIRECTORY) != "iruka" ] ; then
+  echo "Please run this script in project root"
+  exit 1
+fi
+
+#
+# Welcome Message
+#
+echo ""
+echo "  iruka"
+echo ""
+
+#
+# Check for VirtualBox
+#
+if test $(which virtualbox) ; then
+  echo "  + VirtualBox found"
+else
+  echo "  x You need to install VirtualBox."
+  echo "    You can download it from https://www.virtualbox.org/wiki/Downloads"
+  exit 1
+fi
+
+#
+# Check for Vagrant
+#
+if test $(which vagrant) ; then
+  echo "  + Vagrant found"
+else
+  echo "  x You need to install Vagrant."
+  echo "    You can download it from http://www.vagrantup.com/downloads.html"
+  exit 1
+fi
+
+#
+# Install vagrant plugins
+#
+if [[ $(vagrant plugin list) =~ dotenv ]] ; then
+  echo "  + Vagrant plugin 'dotenv' found"
+else
+  echo "  + Installing vagrant plugin 'dotenv'..."
+  bundle exec vagrant plugin install dotenv
+fi
+
+#
+# Prepare coreos/.env
+#
+if test -f coreos/.env ; then
+  echo "  + coreos/.env found"
+else
+  echo "  + Creating .env"
+  cp coreos/.env.sample coreos/.env
+fi
+
+#
+# Startup instructions
+#
+echo ""
+echo "  Good work. We're ready."
+echo ""
+
+exit 0
