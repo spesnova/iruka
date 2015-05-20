@@ -1,0 +1,8 @@
+---
+"$schema": http://json-schema.org/draft-04/hyper-schema
+description: Iruka API v1 Alpha Document
+id: iruka
+links:
+  - href: https://github.com/spesnova/iruka
+    rel: self
+title: Iruka API v1 Alpha
