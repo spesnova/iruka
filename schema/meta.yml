@@ -3,6 +3,6 @@
 description: Iruka API v1 Alpha Document
 id: iruka
 links:
-- href: https://github.com/spesnova/iruka
+- href: https://<your-iruka-server>.com
   rel: self
 title: Iruka API v1 Alpha
