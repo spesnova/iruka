@@ -6,14 +6,24 @@
   "definitions": {
     "app": {
       "$schema": "http://json-schema.org/draft-04/hyper-schema",
-      "title": "FIXME - App",
-      "description": "FIXME",
+      "title": "App",
+      "description": "An app represents the program that you would like to deploy and run on iruka",
       "stability": "prototype",
       "strictProperties": true,
       "type": [
         "object"
       ],
       "definitions": {
+        "identity": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/app/definitions/id"
+            },
+            {
+              "$ref": "#/definitions/app/definitions/name"
+            }
+          ]
+        },
         "id": {
           "description": "unique identifier of app",
           "example": "01234567-89ab-cdef-0123-456789abcdef",
@@ -25,20 +35,18 @@
         },
         "name": {
           "description": "unique name of app",
-          "example": "name",
-          "readOnly": true,
+          "example": "example",
+          "readOnly": false,
           "type": [
             "string"
           ]
         },
-        "identity": {
-          "anyOf": [
-            {
-              "$ref": "#/definitions/app/definitions/id"
-            },
-            {
-              "$ref": "#/definitions/app/definitions/name"
-            }
+        "web_url": {
+          "description": "web URL of app",
+          "example": "https://example.irukaapp.com/",
+          "readOnly": true,
+          "type": [
+            "string"
           ]
         },
         "created_at": {
@@ -66,6 +74,9 @@
           "rel": "create",
           "schema": {
             "properties": {
+              "id": {
+                "$ref": "#/definitions/app/definitions/name"
+              }
             },
             "type": [
               "object"
@@ -110,14 +121,17 @@
         }
       ],
       "properties": {
-        "created_at": {
-          "$ref": "#/definitions/app/definitions/created_at"
-        },
         "id": {
           "$ref": "#/definitions/app/definitions/id"
         },
         "name": {
           "$ref": "#/definitions/app/definitions/name"
+        },
+        "web_url": {
+          "$ref": "#/definitions/app/definitions/web_url"
+        },
+        "created_at": {
+          "$ref": "#/definitions/app/definitions/created_at"
         },
         "updated_at": {
           "$ref": "#/definitions/app/definitions/updated_at"
@@ -134,7 +148,7 @@
   "id": "iruka",
   "links": [
     {
-      "href": "https://github.com/spesnova/iruka",
+      "href": "https://<your-iruka-server>.com",
       "rel": "self"
     }
   ],

@@ -1,12 +1,16 @@
 ---
 "$schema": http://json-schema.org/draft-04/hyper-schema
-title: FIXME - App
-description: FIXME
+title: App
+description: An app represents the program that you would like to deploy and run on iruka
 stability: prototype
 strictProperties: true
 type:
 - object
 definitions:
+  identity:
+    anyOf:
+    - "$ref": "/schemata/app#/definitions/id"
+    - "$ref": "/schemata/app#/definitions/name"
   id:
     description: unique identifier of app
     example: 01234567-89ab-cdef-0123-456789abcdef
@@ -16,14 +20,16 @@ definitions:
     - string
   name:
     description: unique name of app
-    example: name
+    example: example
+    readOnly: false
+    type:
+    - string
+  web_url:
+    description: web URL of app
+    example: https://example.irukaapp.com/
     readOnly: true
     type:
     - string
-  identity:
-    anyOf:
-    - "$ref": "/schemata/app#/definitions/id"
-    - "$ref": "/schemata/app#/definitions/name"
   created_at:
     description: when app was created
     example: '2012-01-01T12:00:00Z'
@@ -42,7 +48,11 @@ links:
   method: POST
   rel: create
   schema:
-    properties: {}
+    properties: {
+      "id": {
+        "$ref": "/schemata/app#/definitions/name"
+      }
+    }
     type:
     - object
   title: Create
@@ -71,12 +81,14 @@ links:
     - object
   title: Update
 properties:
-  created_at:
-    "$ref": "/schemata/app#/definitions/created_at"
   id:
     "$ref": "/schemata/app#/definitions/id"
   name:
     "$ref": "/schemata/app#/definitions/name"
+  web_url:
+    "$ref": "/schemata/app#/definitions/web_url"
+  created_at:
+    "$ref": "/schemata/app#/definitions/created_at"
   updated_at:
     "$ref": "/schemata/app#/definitions/updated_at"
 id: schemata/app

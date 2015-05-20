@@ -1,16 +1,17 @@
-sample
+example header
 
 ## App
 
-FIXME
+An app represents the program that you would like to deploy and run on iruka
 
 ### Attributes
 
 | Name | Type | Description | Example |
 | ------- | ------- | ------- | ------- |
-| **created_at** | *date-time* | when app was created | `"2012-01-01T12:00:00Z"` |
 | **id** | *uuid* | unique identifier of app | `"01234567-89ab-cdef-0123-456789abcdef"` |
-| **name** | *string* | unique name of app | `"name"` |
+| **name** | *string* | unique name of app | `"example"` |
+| **web_url** | *string* | web URL of app | `"https://example.irukaapp.com/"` |
+| **created_at** | *date-time* | when app was created | `"2012-01-01T12:00:00Z"` |
 | **updated_at** | *date-time* | when app was updated | `"2012-01-01T12:00:00Z"` |
 
 ### App Create
@@ -21,14 +22,21 @@ Create a new app.
 POST /apps
 ```
 
+#### Optional Parameters
+
+| Name | Type | Description | Example |
+| ------- | ------- | ------- | ------- |
+| **id** | *string* | unique name of app | `"example"` |
+
 
 #### Curl Example
 
 ```bash
-$ curl -n -X POST https://github.com/spesnova/iruka/apps \
+$ curl -n -X POST https://<your-iruka-server>.com/apps \
   -H "Content-Type: application/json" \
  \
   -d '{
+  "id": "example"
 }'
 ```
 
@@ -41,9 +49,10 @@ HTTP/1.1 201 Created
 
 ```json
 {
-  "created_at": "2012-01-01T12:00:00Z",
   "id": "01234567-89ab-cdef-0123-456789abcdef",
-  "name": "name",
+  "name": "example",
+  "web_url": "https://example.irukaapp.com/",
+  "created_at": "2012-01-01T12:00:00Z",
   "updated_at": "2012-01-01T12:00:00Z"
 }
 ```
@@ -60,7 +69,7 @@ DELETE /apps/{app_id_or_name}
 #### Curl Example
 
 ```bash
-$ curl -n -X DELETE https://github.com/spesnova/iruka/apps/$APP_ID_OR_NAME \
+$ curl -n -X DELETE https://<your-iruka-server>.com/apps/$APP_ID_OR_NAME \
   -H "Content-Type: application/json" \
 ```
 
@@ -73,9 +82,10 @@ HTTP/1.1 200 OK
 
 ```json
 {
-  "created_at": "2012-01-01T12:00:00Z",
   "id": "01234567-89ab-cdef-0123-456789abcdef",
-  "name": "name",
+  "name": "example",
+  "web_url": "https://example.irukaapp.com/",
+  "created_at": "2012-01-01T12:00:00Z",
   "updated_at": "2012-01-01T12:00:00Z"
 }
 ```
@@ -92,7 +102,7 @@ GET /apps/{app_id_or_name}
 #### Curl Example
 
 ```bash
-$ curl -n https://github.com/spesnova/iruka/apps/$APP_ID_OR_NAME
+$ curl -n https://<your-iruka-server>.com/apps/$APP_ID_OR_NAME
 ```
 
 
@@ -104,9 +114,10 @@ HTTP/1.1 200 OK
 
 ```json
 {
-  "created_at": "2012-01-01T12:00:00Z",
   "id": "01234567-89ab-cdef-0123-456789abcdef",
-  "name": "name",
+  "name": "example",
+  "web_url": "https://example.irukaapp.com/",
+  "created_at": "2012-01-01T12:00:00Z",
   "updated_at": "2012-01-01T12:00:00Z"
 }
 ```
@@ -123,7 +134,7 @@ GET /apps
 #### Curl Example
 
 ```bash
-$ curl -n https://github.com/spesnova/iruka/apps
+$ curl -n https://<your-iruka-server>.com/apps
 ```
 
 
@@ -136,9 +147,10 @@ HTTP/1.1 200 OK
 ```json
 [
   {
-    "created_at": "2012-01-01T12:00:00Z",
     "id": "01234567-89ab-cdef-0123-456789abcdef",
-    "name": "name",
+    "name": "example",
+    "web_url": "https://example.irukaapp.com/",
+    "created_at": "2012-01-01T12:00:00Z",
     "updated_at": "2012-01-01T12:00:00Z"
   }
 ]
@@ -156,7 +168,7 @@ PATCH /apps/{app_id_or_name}
 #### Curl Example
 
 ```bash
-$ curl -n -X PATCH https://github.com/spesnova/iruka/apps/$APP_ID_OR_NAME \
+$ curl -n -X PATCH https://<your-iruka-server>.com/apps/$APP_ID_OR_NAME \
   -H "Content-Type: application/json" \
  \
   -d '{
@@ -172,9 +184,10 @@ HTTP/1.1 200 OK
 
 ```json
 {
-  "created_at": "2012-01-01T12:00:00Z",
   "id": "01234567-89ab-cdef-0123-456789abcdef",
-  "name": "name",
+  "name": "example",
+  "web_url": "https://example.irukaapp.com/",
+  "created_at": "2012-01-01T12:00:00Z",
   "updated_at": "2012-01-01T12:00:00Z"
 }
 ```
