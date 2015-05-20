@@ -63,6 +63,24 @@ else
 fi
 
 #
+# Check for Bundler
+#
+if test ! $(which bundle)
+then
+  echo "  x You need to install Bundler:"
+  echo "    gem install bundler"
+  exit
+else
+  echo "  + Bundler found."
+fi
+
+#
+# Install gems
+#
+echo "  + Bootstrapping your Rubies."
+bundle install --binstubs --path vendor/gems --quiet
+
+#
 # Startup instructions
 #
 echo ""
