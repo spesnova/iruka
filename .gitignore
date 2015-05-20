@@ -1,4 +1,11 @@
 #
+# Bundler
+#
+.bundle
+bin
+vendor
+
+#
 # coreos-vagrant
 #
 coreos/.env
