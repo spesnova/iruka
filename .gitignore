@@ -1,0 +1,6 @@
+#
+# coreos-vagrant
+#
+coreos/.env
+coreos/.vagrant
+coreos/user-data
