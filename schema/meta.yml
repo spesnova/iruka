@@ -3,6 +3,6 @@
 description: Iruka API v1 Alpha Document
 id: iruka
 links:
-- href: https://<your-iruka-server>.com
+- href: https://<your-iruka-server>.com/api/v1-alpha
   rel: self
 title: Iruka API v1 Alpha
