@@ -137,18 +137,237 @@
           "$ref": "#/definitions/app/definitions/updated_at"
         }
       }
+    },
+    "container": {
+      "$schema": "http://json-schema.org/draft-04/hyper-schema",
+      "title": "Container",
+      "description": "Container encapsulate running processes of an app on iruka.",
+      "stability": "prototype",
+      "strictProperties": true,
+      "type": [
+        "object"
+      ],
+      "definitions": {
+        "identity": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/container/definitions/id"
+            },
+            {
+              "$ref": "#/definitions/container/definitions/name"
+            }
+          ]
+        },
+        "id": {
+          "description": "unique identifier of container",
+          "example": "01234567-89ab-cdef-0123-456789abcdef",
+          "readOnly": true,
+          "format": "uuid",
+          "type": [
+            "string"
+          ]
+        },
+        "name": {
+          "description": "unique name of container",
+          "example": "example.web.1",
+          "readOnly": true,
+          "type": [
+            "string"
+          ]
+        },
+        "image": {
+          "description": "resource URI of the Docker image (including tag) of the container",
+          "example": "quay.io/spesnova/example:latest",
+          "readOnly": false,
+          "type": [
+            "string"
+          ]
+        },
+        "size": {
+          "description": "container size (default “1X”)",
+          "example": "2X",
+          "readOnly": false,
+          "type": [
+            "string"
+          ]
+        },
+        "command": {
+          "description": "command used to start this process",
+          "example": "bundle exec rails server",
+          "readOnly": false,
+          "type": [
+            "string"
+          ]
+        },
+        "ports": {
+          "description": "expose ports",
+          "example": [
+            80,
+            8080
+          ],
+          "readOnly": false,
+          "type": [
+            "array"
+          ]
+        },
+        "type": {
+          "description": "type of process (either \"web\", \"worker\", \"timer\", or \"run\")",
+          "example": "web",
+          "readOnly": false,
+          "type": [
+            "string"
+          ]
+        },
+        "state": {
+          "description": "current status of process (either exited or up)",
+          "example": "up",
+          "readOnly": true,
+          "type": [
+            "string"
+          ]
+        },
+        "created_at": {
+          "description": "when container was created",
+          "example": "2012-01-01T12:00:00Z",
+          "format": "date-time",
+          "type": [
+            "string"
+          ]
+        },
+        "updated_at": {
+          "description": "when container was updated",
+          "example": "2012-01-01T12:00:00Z",
+          "format": "date-time",
+          "type": [
+            "string"
+          ]
+        }
+      },
+      "links": [
+        {
+          "description": "Create a new container.",
+          "href": "/apps/{(%23%2Fdefinitions%2Fapp%2Fdefinitions%2Fidentity)}/containers",
+          "method": "POST",
+          "rel": "create",
+          "schema": {
+            "properties": {
+              "image": {
+                "$ref": "#/definitions/container/definitions/image"
+              },
+              "size": {
+                "$ref": "#/definitions/container/definitions/size"
+              },
+              "command": {
+                "$ref": "#/definitions/container/definitions/command"
+              },
+              "type": {
+                "$ref": "#/definitions/container/definitions/type"
+              },
+              "ports": {
+                "$ref": "#/definitions/container/definitions/ports"
+              }
+            },
+            "type": [
+              "object"
+            ]
+          },
+          "title": "Create"
+        },
+        {
+          "description": "Delete an existing container.",
+          "href": "/apps/{(%23%2Fdefinitions%2Fapp%2Fdefinitions%2Fidentity)}/containers/{(%23%2Fdefinitions%2Fcontainer%2Fdefinitions%2Fidentity)}",
+          "method": "DELETE",
+          "rel": "destroy",
+          "title": "Delete"
+        },
+        {
+          "description": "Info for existing container.",
+          "href": "/apps/{(%23%2Fdefinitions%2Fapp%2Fdefinitions%2Fidentity)}/containers/{(%23%2Fdefinitions%2Fcontainer%2Fdefinitions%2Fidentity)}",
+          "method": "GET",
+          "rel": "self",
+          "title": "Info"
+        },
+        {
+          "description": "List existing containers.",
+          "href": "/apps/{(%23%2Fdefinitions%2Fapp%2Fdefinitions%2Fidentity)}/containers",
+          "method": "GET",
+          "rel": "instances",
+          "title": "List"
+        },
+        {
+          "description": "Update an existing container.",
+          "href": "/apps/{(%23%2Fdefinitions%2Fapp%2Fdefinitions%2Fidentity)}/containers/{(%23%2Fdefinitions%2Fcontainer%2Fdefinitions%2Fidentity)}",
+          "method": "PATCH",
+          "rel": "update",
+          "schema": {
+            "properties": {
+              "image": {
+                "$ref": "#/definitions/container/definitions/image"
+              },
+              "size": {
+                "$ref": "#/definitions/container/definitions/size"
+              },
+              "command": {
+                "$ref": "#/definitions/container/definitions/command"
+              },
+              "type": {
+                "$ref": "#/definitions/container/definitions/type"
+              },
+              "ports": {
+                "$ref": "#/definitions/container/definitions/ports"
+              }
+            },
+            "type": [
+              "object"
+            ]
+          },
+          "title": "Update"
+        }
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/container/definitions/id"
+        },
+        "name": {
+          "$ref": "#/definitions/container/definitions/name"
+        },
+        "image": {
+          "$ref": "#/definitions/container/definitions/image"
+        },
+        "command": {
+          "$ref": "#/definitions/container/definitions/command"
+        },
+        "ports": {
+          "$ref": "#/definitions/container/definitions/ports"
+        },
+        "size": {
+          "$ref": "#/definitions/container/definitions/size"
+        },
+        "state": {
+          "$ref": "#/definitions/container/definitions/state"
+        },
+        "created_at": {
+          "$ref": "#/definitions/container/definitions/created_at"
+        },
+        "updated_at": {
+          "$ref": "#/definitions/container/definitions/updated_at"
+        }
+      }
     }
   },
   "properties": {
     "app": {
       "$ref": "#/definitions/app"
+    },
+    "container": {
+      "$ref": "#/definitions/container"
     }
   },
   "description": "Iruka API v1 Alpha Document",
   "id": "iruka",
   "links": [
     {
-      "href": "https://<your-iruka-server>.com",
+      "href": "https://<your-iruka-server>.com/api/v1-alpha",
       "rel": "self"
     }
   ],

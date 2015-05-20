@@ -33,7 +33,7 @@ POST /apps
 #### Curl Example
 
 ```bash
-$ curl -n -X POST https://<your-iruka-server>.com/apps \
+$ curl -n -X POST https://<your-iruka-server>.com/api/v1-alpha/apps \
   -H "Content-Type: application/json" \
  \
   -d '{
@@ -70,7 +70,7 @@ DELETE /apps/{app_id_or_name}
 #### Curl Example
 
 ```bash
-$ curl -n -X DELETE https://<your-iruka-server>.com/apps/$APP_ID_OR_NAME \
+$ curl -n -X DELETE https://<your-iruka-server>.com/api/v1-alpha/apps/$APP_ID_OR_NAME \
   -H "Content-Type: application/json" \
 ```
 
@@ -103,7 +103,7 @@ GET /apps/{app_id_or_name}
 #### Curl Example
 
 ```bash
-$ curl -n https://<your-iruka-server>.com/apps/$APP_ID_OR_NAME
+$ curl -n https://<your-iruka-server>.com/api/v1-alpha/apps/$APP_ID_OR_NAME
 ```
 
 
@@ -135,7 +135,7 @@ GET /apps
 #### Curl Example
 
 ```bash
-$ curl -n https://<your-iruka-server>.com/apps
+$ curl -n https://<your-iruka-server>.com/api/v1-alpha/apps
 ```
 
 
@@ -169,7 +169,7 @@ PATCH /apps/{app_id_or_name}
 #### Curl Example
 
 ```bash
-$ curl -n -X PATCH https://<your-iruka-server>.com/apps/$APP_ID_OR_NAME \
+$ curl -n -X PATCH https://<your-iruka-server>.com/api/v1-alpha/apps/$APP_ID_OR_NAME \
   -H "Content-Type: application/json" \
  \
   -d '{
@@ -188,6 +188,267 @@ HTTP/1.1 200 OK
   "id": "01234567-89ab-cdef-0123-456789abcdef",
   "name": "example",
   "web_url": "https://example.irukaapp.com/",
+  "created_at": "2012-01-01T12:00:00Z",
+  "updated_at": "2012-01-01T12:00:00Z"
+}
+```
+
+
+## Container
+
+Container encapsulate running processes of an app on iruka.
+
+### Attributes
+
+| Name | Type | Description | Example |
+| ------- | ------- | ------- | ------- |
+| **id** | *uuid* | unique identifier of container | `"01234567-89ab-cdef-0123-456789abcdef"` |
+| **name** | *string* | unique name of container | `"example.web.1"` |
+| **image** | *string* | resource URI of the Docker image (including tag) of the container | `"quay.io/spesnova/example:latest"` |
+| **command** | *string* | command used to start this process | `"bundle exec rails server"` |
+| **ports** | *array* | expose ports | `[80,8080]` |
+| **size** | *string* | container size (default “1X”) | `"2X"` |
+| **state** | *string* | current status of process (either exited or up) | `"up"` |
+| **created_at** | *date-time* | when container was created | `"2012-01-01T12:00:00Z"` |
+| **updated_at** | *date-time* | when container was updated | `"2012-01-01T12:00:00Z"` |
+
+### Container Create
+
+Create a new container.
+
+```
+POST /apps/{app_id_or_name}/containers
+```
+
+#### Optional Parameters
+
+| Name | Type | Description | Example |
+| ------- | ------- | ------- | ------- |
+| **image** | *string* | resource URI of the Docker image (including tag) of the container | `"quay.io/spesnova/example:latest"` |
+| **size** | *string* | container size (default “1X”) | `"2X"` |
+| **command** | *string* | command used to start this process | `"bundle exec rails server"` |
+| **type** | *string* | type of process (either "web", "worker", "timer", or "run") | `"web"` |
+| **ports** | *array* | expose ports | `[80,8080]` |
+
+
+#### Curl Example
+
+```bash
+$ curl -n -X POST https://<your-iruka-server>.com/api/v1-alpha/apps/$APP_ID_OR_NAME/containers \
+  -H "Content-Type: application/json" \
+ \
+  -d '{
+  "image": "quay.io/spesnova/example:latest",
+  "size": "2X",
+  "command": "bundle exec rails server",
+  "type": "web",
+  "ports": [
+    80,
+    8080
+  ]
+}'
+```
+
+
+#### Response Example
+
+```
+HTTP/1.1 201 Created
+```
+
+```json
+{
+  "id": "01234567-89ab-cdef-0123-456789abcdef",
+  "name": "example.web.1",
+  "image": "quay.io/spesnova/example:latest",
+  "command": "bundle exec rails server",
+  "ports": [
+    80,
+    8080
+  ],
+  "size": "2X",
+  "state": "up",
+  "created_at": "2012-01-01T12:00:00Z",
+  "updated_at": "2012-01-01T12:00:00Z"
+}
+```
+
+### Container Delete
+
+Delete an existing container.
+
+```
+DELETE /apps/{app_id_or_name}/containers/{container_id_or_name}
+```
+
+
+#### Curl Example
+
+```bash
+$ curl -n -X DELETE https://<your-iruka-server>.com/api/v1-alpha/apps/$APP_ID_OR_NAME/containers/$CONTAINER_ID_OR_NAME \
+  -H "Content-Type: application/json" \
+```
+
+
+#### Response Example
+
+```
+HTTP/1.1 200 OK
+```
+
+```json
+{
+  "id": "01234567-89ab-cdef-0123-456789abcdef",
+  "name": "example.web.1",
+  "image": "quay.io/spesnova/example:latest",
+  "command": "bundle exec rails server",
+  "ports": [
+    80,
+    8080
+  ],
+  "size": "2X",
+  "state": "up",
+  "created_at": "2012-01-01T12:00:00Z",
+  "updated_at": "2012-01-01T12:00:00Z"
+}
+```
+
+### Container Info
+
+Info for existing container.
+
+```
+GET /apps/{app_id_or_name}/containers/{container_id_or_name}
+```
+
+
+#### Curl Example
+
+```bash
+$ curl -n https://<your-iruka-server>.com/api/v1-alpha/apps/$APP_ID_OR_NAME/containers/$CONTAINER_ID_OR_NAME
+```
+
+
+#### Response Example
+
+```
+HTTP/1.1 200 OK
+```
+
+```json
+{
+  "id": "01234567-89ab-cdef-0123-456789abcdef",
+  "name": "example.web.1",
+  "image": "quay.io/spesnova/example:latest",
+  "command": "bundle exec rails server",
+  "ports": [
+    80,
+    8080
+  ],
+  "size": "2X",
+  "state": "up",
+  "created_at": "2012-01-01T12:00:00Z",
+  "updated_at": "2012-01-01T12:00:00Z"
+}
+```
+
+### Container List
+
+List existing containers.
+
+```
+GET /apps/{app_id_or_name}/containers
+```
+
+
+#### Curl Example
+
+```bash
+$ curl -n https://<your-iruka-server>.com/api/v1-alpha/apps/$APP_ID_OR_NAME/containers
+```
+
+
+#### Response Example
+
+```
+HTTP/1.1 200 OK
+```
+
+```json
+[
+  {
+    "id": "01234567-89ab-cdef-0123-456789abcdef",
+    "name": "example.web.1",
+    "image": "quay.io/spesnova/example:latest",
+    "command": "bundle exec rails server",
+    "ports": [
+      80,
+      8080
+    ],
+    "size": "2X",
+    "state": "up",
+    "created_at": "2012-01-01T12:00:00Z",
+    "updated_at": "2012-01-01T12:00:00Z"
+  }
+]
+```
+
+### Container Update
+
+Update an existing container.
+
+```
+PATCH /apps/{app_id_or_name}/containers/{container_id_or_name}
+```
+
+#### Optional Parameters
+
+| Name | Type | Description | Example |
+| ------- | ------- | ------- | ------- |
+| **image** | *string* | resource URI of the Docker image (including tag) of the container | `"quay.io/spesnova/example:latest"` |
+| **size** | *string* | container size (default “1X”) | `"2X"` |
+| **command** | *string* | command used to start this process | `"bundle exec rails server"` |
+| **type** | *string* | type of process (either "web", "worker", "timer", or "run") | `"web"` |
+| **ports** | *array* | expose ports | `[80,8080]` |
+
+
+#### Curl Example
+
+```bash
+$ curl -n -X PATCH https://<your-iruka-server>.com/api/v1-alpha/apps/$APP_ID_OR_NAME/containers/$CONTAINER_ID_OR_NAME \
+  -H "Content-Type: application/json" \
+ \
+  -d '{
+  "image": "quay.io/spesnova/example:latest",
+  "size": "2X",
+  "command": "bundle exec rails server",
+  "type": "web",
+  "ports": [
+    80,
+    8080
+  ]
+}'
+```
+
+
+#### Response Example
+
+```
+HTTP/1.1 200 OK
+```
+
+```json
+{
+  "id": "01234567-89ab-cdef-0123-456789abcdef",
+  "name": "example.web.1",
+  "image": "quay.io/spesnova/example:latest",
+  "command": "bundle exec rails server",
+  "ports": [
+    80,
+    8080
+  ],
+  "size": "2X",
+  "state": "up",
   "created_at": "2012-01-01T12:00:00Z",
   "updated_at": "2012-01-01T12:00:00Z"
 }

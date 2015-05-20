@@ -1,0 +1,160 @@
+---
+"$schema": http://json-schema.org/draft-04/hyper-schema
+title: Container
+description: Container encapsulate running processes of an app on iruka.
+stability: prototype
+strictProperties: true
+type:
+- object
+definitions:
+  identity:
+    anyOf:
+    - "$ref": "/schemata/container#/definitions/id"
+    - "$ref": "/schemata/container#/definitions/name"
+  id:
+    description: unique identifier of container
+    example: 01234567-89ab-cdef-0123-456789abcdef
+    readOnly: true
+    format: uuid
+    type:
+    - string
+  name:
+    description: unique name of container
+    example: example.web.1
+    readOnly: true
+    type:
+    - string
+  image:
+    description: resource URI of the Docker image (including tag) of the container
+    example: quay.io/spesnova/example:latest
+    readOnly: false
+    type:
+    - string
+  size:
+    description: container size (default “1X”)
+    example: 2X
+    readOnly: false
+    type:
+    - string
+  command:
+    description: command used to start this process
+    example: bundle exec rails server
+    readOnly: false
+    type:
+    - string
+  ports:
+    description: expose ports
+    example: [80, 8080]
+    readOnly: false
+    type:
+    - array
+  type:
+    description: type of process (either "web", "worker", "timer", or "run")
+    example: web
+    readOnly: false
+    type:
+    - string
+  state:
+    description: current status of process (either exited or up)
+    example: up
+    readOnly: true
+    type:
+    - string
+  created_at:
+    description: when container was created
+    example: '2012-01-01T12:00:00Z'
+    format: date-time
+    type:
+    - string
+  updated_at:
+    description: when container was updated
+    example: '2012-01-01T12:00:00Z'
+    format: date-time
+    type:
+    - string
+links:
+- description: Create a new container.
+  href: "/apps/{(%2Fschemata%2Fapp%23%2Fdefinitions%2Fidentity)}/containers"
+  method: POST
+  rel: create
+  schema:
+    properties: {
+      "image": {
+        "$ref": "/schemata/container#/definitions/image"
+      },
+      "size": {
+        "$ref": "/schemata/container#/definitions/size"
+      },
+      "command": {
+        "$ref": "/schemata/container#/definitions/command"
+      },
+      "type": {
+        "$ref": "/schemata/container#/definitions/type"
+      },
+      "ports": {
+        "$ref": "/schemata/container#/definitions/ports"
+      }
+    }
+    type:
+    - object
+  title: Create
+- description: Delete an existing container.
+  href: "/apps/{(%2Fschemata%2Fapp%23%2Fdefinitions%2Fidentity)}/containers/{(%2Fschemata%2Fcontainer%23%2Fdefinitions%2Fidentity)}"
+  method: DELETE
+  rel: destroy
+  title: Delete
+- description: Info for existing container.
+  href: "/apps/{(%2Fschemata%2Fapp%23%2Fdefinitions%2Fidentity)}/containers/{(%2Fschemata%2Fcontainer%23%2Fdefinitions%2Fidentity)}"
+  method: GET
+  rel: self
+  title: Info
+- description: List existing containers.
+  href: "/apps/{(%2Fschemata%2Fapp%23%2Fdefinitions%2Fidentity)}/containers"
+  method: GET
+  rel: instances
+  title: List
+- description: Update an existing container.
+  href: "/apps/{(%2Fschemata%2Fapp%23%2Fdefinitions%2Fidentity)}/containers/{(%2Fschemata%2Fcontainer%23%2Fdefinitions%2Fidentity)}"
+  method: PATCH
+  rel: update
+  schema:
+    properties: {
+      "image": {
+        "$ref": "/schemata/container#/definitions/image"
+      },
+      "size": {
+        "$ref": "/schemata/container#/definitions/size"
+      },
+      "command": {
+        "$ref": "/schemata/container#/definitions/command"
+      },
+      "type": {
+        "$ref": "/schemata/container#/definitions/type"
+      },
+      "ports": {
+        "$ref": "/schemata/container#/definitions/ports"
+      }
+    }
+    type:
+    - object
+  title: Update
+properties:
+  id:
+    "$ref": "/schemata/container#/definitions/id"
+  name:
+    "$ref": "/schemata/container#/definitions/name"
+  image:
+    "$ref": "/schemata/container#/definitions/image"
+  command:
+    "$ref": "/schemata/container#/definitions/command"
+  ports:
+    "$ref": "/schemata/container#/definitions/ports"
+  size:
+    "$ref": "/schemata/container#/definitions/size"
+  state:
+    "$ref": "/schemata/container#/definitions/state"
+  created_at:
+    "$ref": "/schemata/container#/definitions/created_at"
+  updated_at:
+    "$ref": "/schemata/container#/definitions/updated_at"
+id: schemata/container
