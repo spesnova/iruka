@@ -1,0 +1,30 @@
+#!/bin/bash
+#
+# Usage: script/build
+# Description: script to generate docs
+#
+
+set -e
+
+# this script should be run in project root
+BASE_DIRECTORY=`pwd`
+if [ $(basename $BASE_DIRECTORY) != "iruka" ] ; then
+  echo "Please run this script in project root"
+  exit 1
+fi
+
+echo "==> Generating docs..."
+cd $BASE_DIRECTORY
+bin/prmd combine \
+  --meta schema/meta.yml \
+  schema/schemata/ > schema/schema.json
+bin/prmd doc \
+  --prepend docs/api-v1-alpha-header.md \
+  schema/schema.json > docs/api-v1-alpha.md
+echo "    Successfully generated"
+
+echo ""
+echo "  Build has completed!"
+echo ""
+
+exit 0
