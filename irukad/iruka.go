@@ -1,18 +1,24 @@
 package main
 
 import (
-	"fmt"
-	"net/http"
-
 	"github.com/codegangsta/negroni"
 	"github.com/gorilla/mux"
+
+	"github.com/spesnova/iruka/irukad/controllers"
 )
 
 func main() {
 	r := mux.NewRouter()
-	r.HandleFunc("/", func(rw http.ResponseWriter, r *http.Request) {
-		fmt.Fprint(rw, "hello")
-	})
+
+	// Controllers
+	appController := controllers.NewAppController()
+
+	// App Resource
+	r.Path("/apps").Methods("POST").HandlerFunc(appController.Create)
+	r.Path("/apps/{idOrName}").Methods("DELETE").HandlerFunc(appController.Delete)
+	r.Path("/apps/{idOrName}").Methods("GET").HandlerFunc(appController.Info)
+	r.Path("/apps").Methods("GET").HandlerFunc(appController.List)
+	r.Path("/apps/{idOrName}").Methods("PATCH").HandlerFunc(appController.Update)
 
 	// Middleware stack
 	n := negroni.New(
