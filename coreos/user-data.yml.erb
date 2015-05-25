@@ -4,6 +4,14 @@ coreos:
   update:
     group: beta
     reboot-strategy: off
+  etcd:
+    # generate a new token for each unique cluster from https://discovery.etcd.io/new
+    # WARNING: replace each time you 'vagrant destroy'
+    discovery: <%= ENV["ETCD_DISCOVERY"] %>
+    addr: $public_ipv4:4001
+    peer-addr: $public_ipv4:7001
+  fleet:
+    public-ip: $public_ipv4
   units:
     - name: settimezone.service
       command: start
@@ -15,6 +23,10 @@ coreos:
         ExecStart=/usr/bin/timedatectl set-timezone <%= ENV["TIMEZONE"] %>
         RemainAfterExit=yes
         Type=oneshot
+    - name: etcd.service
+      command: start
+    - name: fleet.service
+      command: start
 write_files:
   - path: /etc/ssh/sshd_config
     permissions: 0600
