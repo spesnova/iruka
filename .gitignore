@@ -11,3 +11,8 @@ vendor
 coreos/.env
 coreos/.vagrant
 coreos/user-data
+
+#
+# gin
+#
+gin-bin
