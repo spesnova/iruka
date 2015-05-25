@@ -16,3 +16,8 @@ coreos/user-data
 # gin
 #
 gin-bin
+
+#
+# vim
+#
+*.swp
