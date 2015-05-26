@@ -27,7 +27,7 @@ POST /apps
 
 | Name | Type | Description | Example |
 | ------- | ------- | ------- | ------- |
-| **id** | *string* | unique name of app | `"example"` |
+| **name** | *string* | unique name of app | `"example"` |
 
 
 #### Curl Example
@@ -37,7 +37,7 @@ $ curl -n -X POST https://<your-iruka-server>.com/api/v1-alpha/apps \
   -H "Content-Type: application/json" \
  \
   -d '{
-  "id": "example"
+  "name": "example"
 }'
 ```
 

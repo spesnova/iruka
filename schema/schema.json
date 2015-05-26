@@ -74,7 +74,7 @@
           "rel": "create",
           "schema": {
             "properties": {
-              "id": {
+              "name": {
                 "$ref": "#/definitions/app/definitions/name"
               }
             },

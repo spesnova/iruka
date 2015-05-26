@@ -49,7 +49,7 @@ links:
   rel: create
   schema:
     properties: {
-      "id": {
+      "name": {
         "$ref": "/schemata/app#/definitions/name"
       }
     }
