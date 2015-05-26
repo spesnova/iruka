@@ -176,6 +176,12 @@ Update an existing app.
 PATCH /apps/{app_id_or_name}
 ```
 
+#### Optional Parameters
+
+| Name | Type | Description | Example |
+| ------- | ------- | ------- | ------- |
+| **name** | *string* | unique name of app | `"example"` |
+
 
 #### Curl Example
 
@@ -184,6 +190,7 @@ $ curl -n -X PATCH https://<your-iruka-server>.com/api/v1-alpha/apps/$APP_ID_OR_
   -H "Content-Type: application/json" \
  \
   -d '{
+  "name": "example"
 }'
 ```
 

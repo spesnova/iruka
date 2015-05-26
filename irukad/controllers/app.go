@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -84,5 +83,28 @@ func (c *AppController) List(rw http.ResponseWriter, r *http.Request) {
 }
 
 func (c *AppController) Update(rw http.ResponseWriter, r *http.Request) {
-	fmt.Fprint(rw, "hello")
+	defer r.Body.Close()
+
+	vars := mux.Vars(r)
+	idOrName := vars["idOrName"]
+
+	var opts schema.AppUpdateOpts
+	err := json.NewDecoder(r.Body).Decode(&opts)
+	if err != nil {
+		// TODO (spesnova): response better error
+		c.JSON(rw, http.StatusInternalServerError, "error")
+		return
+	}
+
+	app, err := c.UpdateApp(idOrName, opts)
+	if err != nil {
+		// TODO (spesnova): if the reqeust is invalid, server should returns 400 instead of 500
+		//c.JSON(rw, http.StatusBadRequest, "error")
+
+		// TODO (spesnova): response better error
+		c.JSON(rw, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(rw, http.StatusCreated, app)
 }

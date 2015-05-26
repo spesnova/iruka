@@ -113,3 +113,36 @@ func (r *Registry) Apps() ([]schema.App, error) {
 
 	return apps, nil
 }
+
+// UpdateApp updates an app
+func (r *Registry) UpdateApp(idOrName string, opts schema.AppUpdateOpts) (schema.App, error) {
+	// Validate opts
+	if opts.Name == "" {
+		return schema.App{}, errors.New("name parameter is required, but missing")
+	}
+
+	app, err := r.App(idOrName)
+	if err != nil {
+		return schema.App{}, err
+	}
+	app.UpdatedAt = time.Now()
+	app.Name = opts.Name
+
+	j, err := marshal(app)
+	if err != nil {
+		return schema.App{}, err
+	}
+
+	key := path.Join(r.keyPrefix, appPrefix, app.ID.String())
+	res, err := r.etcd.Set(key, string(j), 0)
+	if err != nil {
+		return schema.App{}, err
+	}
+
+	err = unmarshal(res.Node.Value, &app)
+	if err != nil {
+		return schema.App{}, err
+	}
+
+	return app, nil
+}

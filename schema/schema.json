@@ -112,6 +112,9 @@
           "rel": "update",
           "schema": {
             "properties": {
+              "name": {
+                "$ref": "#/definitions/app/definitions/name"
+              }
             },
             "type": [
               "object"

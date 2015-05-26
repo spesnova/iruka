@@ -76,7 +76,11 @@ links:
   method: PATCH
   rel: update
   schema:
-    properties: {}
+    properties: {
+      "name": {
+        "$ref": "/schemata/app#/definitions/name"
+      }
+    }
     type:
     - object
   title: Update
