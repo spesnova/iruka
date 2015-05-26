@@ -49,3 +49,24 @@ func (r *Registry) CreateApp(opts schema.AppCreateOpts) (schema.App, error) {
 
 	return app, nil
 }
+
+func (r *Registry) Apps() ([]schema.App, error) {
+	key := path.Join(r.keyPrefix, appPrefix)
+	res, err := r.etcd.Get(key, false, true)
+	if err != nil {
+		return nil, err
+	}
+
+	apps := make([]schema.App, len(res.Node.Nodes))
+	for i, node := range res.Node.Nodes {
+		var app schema.App
+		err = unmarshal(node.Value, &app)
+		if err != nil {
+			return nil, err
+		}
+
+		apps[i] = app
+	}
+
+	return apps, nil
+}

@@ -53,7 +53,13 @@ func (c *AppController) Info(rw http.ResponseWriter, r *http.Request) {
 }
 
 func (c *AppController) List(rw http.ResponseWriter, r *http.Request) {
-	fmt.Fprint(rw, "hello")
+	apps, err := c.Apps()
+	if err != nil {
+		c.JSON(rw, http.StatusInternalServerError, "error")
+		return
+	}
+
+	c.JSON(rw, http.StatusOK, apps)
 }
 
 func (c *AppController) Update(rw http.ResponseWriter, r *http.Request) {
