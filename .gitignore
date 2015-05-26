@@ -21,3 +21,8 @@ gin-bin
 # vim
 #
 *.swp
+
+#
+# OSX
+#
+.DS_Store
