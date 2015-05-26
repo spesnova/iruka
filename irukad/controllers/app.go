@@ -20,45 +20,45 @@ func NewAppController(reg *registry.Registry, ren *render.Render) AppController 
 	return AppController{reg, ren}
 }
 
-func (a *AppController) Create(rw http.ResponseWriter, r *http.Request) {
+func (c *AppController) Create(rw http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 
 	var opts schema.AppCreateOpts
 	err := json.NewDecoder(r.Body).Decode(&opts)
 	if err != nil {
 		// TODO (spesnova): response better error
-		a.JSON(rw, http.StatusInternalServerError, "error")
+		c.JSON(rw, http.StatusInternalServerError, "error")
 		return
 	}
 
 	if opts.Name == "" {
 		// TODO (spesnova): response better error
-		a.JSON(rw, http.StatusBadRequest, "error")
+		c.JSON(rw, http.StatusBadRequest, "error")
 		return
 	}
 
-	app, err := a.CreateApp(opts)
+	app, err := c.CreateApp(opts)
 	if err != nil {
 		// TODO (spesnova): response better error
-		a.JSON(rw, http.StatusInternalServerError, "error")
+		c.JSON(rw, http.StatusInternalServerError, "error")
 		return
 	}
 
-	a.JSON(rw, http.StatusCreated, app)
+	c.JSON(rw, http.StatusCreated, app)
 }
 
-func (a *AppController) Delete(rw http.ResponseWriter, r *http.Request) {
+func (c *AppController) Delete(rw http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(rw, "hello")
 }
 
-func (a *AppController) Info(rw http.ResponseWriter, r *http.Request) {
+func (c *AppController) Info(rw http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(rw, "hello")
 }
 
-func (a *AppController) List(rw http.ResponseWriter, r *http.Request) {
+func (c *AppController) List(rw http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(rw, "hello")
 }
 
-func (a *AppController) Update(rw http.ResponseWriter, r *http.Request) {
+func (c *AppController) Update(rw http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(rw, "hello")
 }
