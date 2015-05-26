@@ -221,8 +221,16 @@
             "string"
           ]
         },
+        "desired_state": {
+          "description": "desired state of process (either exited or up)",
+          "example": "up",
+          "readOnly": false,
+          "type": [
+            "string"
+          ]
+        },
         "state": {
-          "description": "current status of process (either exited or up)",
+          "description": "current state of process (either exited or up)",
           "example": "up",
           "readOnly": true,
           "type": [
@@ -248,7 +256,7 @@
       },
       "links": [
         {
-          "description": "Create a new container.",
+          "description": "Create and run a new container.",
           "href": "/apps/{(%23%2Fdefinitions%2Fapp%2Fdefinitions%2Fidentity)}/containers",
           "method": "POST",
           "rel": "create",
@@ -298,7 +306,7 @@
           "title": "List"
         },
         {
-          "description": "Update an existing container.",
+          "description": "Update options and restart an existing container.",
           "href": "/apps/{(%23%2Fdefinitions%2Fapp%2Fdefinitions%2Fidentity)}/containers/{(%23%2Fdefinitions%2Fcontainer%2Fdefinitions%2Fidentity)}",
           "method": "PATCH",
           "rel": "update",
@@ -345,6 +353,9 @@
         },
         "size": {
           "$ref": "#/definitions/container/definitions/size"
+        },
+        "desired_state": {
+          "$ref": "#/definitions/container/definitions/desired_state"
         },
         "state": {
           "$ref": "#/definitions/container/definitions/state"

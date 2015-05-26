@@ -54,8 +54,14 @@ definitions:
     readOnly: false
     type:
     - string
+  desired_state:
+    description: desired state of process (either exited or up)
+    example: up
+    readOnly: false
+    type:
+    - string
   state:
-    description: current status of process (either exited or up)
+    description: current state of process (either exited or up)
     example: up
     readOnly: true
     type:
@@ -73,7 +79,7 @@ definitions:
     type:
     - string
 links:
-- description: Create a new container.
+- description: Create and run a new container.
   href: "/apps/{(%2Fschemata%2Fapp%23%2Fdefinitions%2Fidentity)}/containers"
   method: POST
   rel: create
@@ -113,7 +119,7 @@ links:
   method: GET
   rel: instances
   title: List
-- description: Update an existing container.
+- description: Update options and restart an existing container.
   href: "/apps/{(%2Fschemata%2Fapp%23%2Fdefinitions%2Fidentity)}/containers/{(%2Fschemata%2Fcontainer%23%2Fdefinitions%2Fidentity)}"
   method: PATCH
   rel: update
@@ -151,6 +157,8 @@ properties:
     "$ref": "/schemata/container#/definitions/ports"
   size:
     "$ref": "/schemata/container#/definitions/size"
+  desired_state:
+    "$ref": "/schemata/container#/definitions/desired_state"
   state:
     "$ref": "/schemata/container#/definitions/state"
   created_at:
