@@ -18,6 +18,13 @@ definitions:
     format: uuid
     type:
     - string
+  app_id:
+    description: unique identifier of app the container is belong to
+    example: 01234567-89ab-cdef-0123-456789abcdef
+    readOnly: true
+    format: uuid
+    type:
+    - string
   name:
     description: unique name of container
     example: example.web.1
@@ -147,6 +154,8 @@ links:
 properties:
   id:
     "$ref": "/schemata/container#/definitions/id"
+  app_id:
+    "$ref": "/schemata/container#/definitions/app_id"
   name:
     "$ref": "/schemata/container#/definitions/name"
   image:

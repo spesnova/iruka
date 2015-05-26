@@ -221,6 +221,7 @@ Container encapsulate running processes of an app on iruka.
 | Name | Type | Description | Example |
 | ------- | ------- | ------- | ------- |
 | **id** | *uuid* | unique identifier of container | `"01234567-89ab-cdef-0123-456789abcdef"` |
+| **app_id** | *uuid* | unique identifier of app the container is belong to | `"01234567-89ab-cdef-0123-456789abcdef"` |
 | **name** | *string* | unique name of container | `"example.web.1"` |
 | **image** | *string* | resource URI of the Docker image (including tag) of the container | `"quay.io/spesnova/example:latest"` |
 | **command** | *string* | command used to start this process | `"bundle exec rails server"` |
@@ -278,6 +279,7 @@ HTTP/1.1 201 Created
 ```json
 {
   "id": "01234567-89ab-cdef-0123-456789abcdef",
+  "app_id": "01234567-89ab-cdef-0123-456789abcdef",
   "name": "example.web.1",
   "image": "quay.io/spesnova/example:latest",
   "command": "bundle exec rails server",
@@ -319,6 +321,7 @@ HTTP/1.1 200 OK
 ```json
 {
   "id": "01234567-89ab-cdef-0123-456789abcdef",
+  "app_id": "01234567-89ab-cdef-0123-456789abcdef",
   "name": "example.web.1",
   "image": "quay.io/spesnova/example:latest",
   "command": "bundle exec rails server",
@@ -359,6 +362,7 @@ HTTP/1.1 200 OK
 ```json
 {
   "id": "01234567-89ab-cdef-0123-456789abcdef",
+  "app_id": "01234567-89ab-cdef-0123-456789abcdef",
   "name": "example.web.1",
   "image": "quay.io/spesnova/example:latest",
   "command": "bundle exec rails server",
@@ -400,6 +404,7 @@ HTTP/1.1 200 OK
 [
   {
     "id": "01234567-89ab-cdef-0123-456789abcdef",
+    "app_id": "01234567-89ab-cdef-0123-456789abcdef",
     "name": "example.web.1",
     "image": "quay.io/spesnova/example:latest",
     "command": "bundle exec rails server",
@@ -463,6 +468,7 @@ HTTP/1.1 200 OK
 ```json
 {
   "id": "01234567-89ab-cdef-0123-456789abcdef",
+  "app_id": "01234567-89ab-cdef-0123-456789abcdef",
   "name": "example.web.1",
   "image": "quay.io/spesnova/example:latest",
   "command": "bundle exec rails server",
