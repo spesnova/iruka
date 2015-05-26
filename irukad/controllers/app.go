@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/gorilla/mux"
 	"github.com/unrolled/render"
 
 	"github.com/spesnova/iruka/registry"
@@ -49,7 +50,17 @@ func (c *AppController) Delete(rw http.ResponseWriter, r *http.Request) {
 }
 
 func (c *AppController) Info(rw http.ResponseWriter, r *http.Request) {
-	fmt.Fprint(rw, "hello")
+	vars := mux.Vars(r)
+	idOrName := vars["idOrName"]
+
+	app, err := c.App(idOrName)
+	if err != nil {
+		// TODO (spesnova): separate 404 and 500 error
+		c.JSON(rw, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(rw, http.StatusOK, app)
 }
 
 func (c *AppController) List(rw http.ResponseWriter, r *http.Request) {

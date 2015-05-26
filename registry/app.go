@@ -50,6 +50,32 @@ func (r *Registry) CreateApp(opts schema.AppCreateOpts) (schema.App, error) {
 	return app, nil
 }
 
+// App returns an app, you can find it by id or name
+func (r *Registry) App(idOrName string) (schema.App, error) {
+	var app schema.App
+
+	apps, err := r.Apps()
+	if err != nil {
+		return app, err
+	}
+
+	if uuid.Parse(idOrName) == nil {
+		for _, app := range apps {
+			if app.Name == idOrName {
+				return app, nil
+			}
+		}
+	} else {
+		for _, app := range apps {
+			if uuid.Equal(app.ID, uuid.Parse(idOrName)) {
+				return app, nil
+			}
+		}
+	}
+
+	return app, errors.New("No such app: " + idOrName)
+}
+
 func (r *Registry) Apps() ([]schema.App, error) {
 	key := path.Join(r.keyPrefix, appPrefix)
 	res, err := r.etcd.Get(key, false, true)
