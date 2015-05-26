@@ -52,3 +52,9 @@ write_files:
       restrict default nomodify nopeer noquery limited kod
       restrict 127.0.0.1
       restrict [::1]
+  - path: /etc/systemd/system/fleet.socket.d/30-ListenStream.conf
+    permissions: 0600
+    owner: root:root
+    content: |
+      [Socket]
+      ListenStream=127.0.0.1:49153
