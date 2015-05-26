@@ -46,7 +46,17 @@ func (c *AppController) Create(rw http.ResponseWriter, r *http.Request) {
 }
 
 func (c *AppController) Delete(rw http.ResponseWriter, r *http.Request) {
-	fmt.Fprint(rw, "hello")
+	vars := mux.Vars(r)
+	idOrName := vars["idOrName"]
+
+	app, err := c.DestroyApp(idOrName)
+	if err != nil {
+		// TODO (spesnova): separate 404 and 500 error
+		c.JSON(rw, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(rw, http.StatusOK, app)
 }
 
 func (c *AppController) Info(rw http.ResponseWriter, r *http.Request) {

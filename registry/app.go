@@ -50,6 +50,23 @@ func (r *Registry) CreateApp(opts schema.AppCreateOpts) (schema.App, error) {
 	return app, nil
 }
 
+// DestroyApp removes an etcd key-value
+func (r *Registry) DestroyApp(idOrName string) (schema.App, error) {
+	app, err := r.App(idOrName)
+	if err != nil {
+		return schema.App{}, err
+	}
+
+	key := path.Join(r.keyPrefix, appPrefix, app.ID.String())
+
+	_, err = r.etcd.Delete(key, true)
+	if err != nil {
+		return schema.App{}, errors.New("Failed to delete app: " + app.ID.String())
+	}
+
+	return app, err
+}
+
 // App returns an app, you can find it by id or name
 func (r *Registry) App(idOrName string) (schema.App, error) {
 	var app schema.App
