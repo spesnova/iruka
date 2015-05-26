@@ -31,14 +31,11 @@ func (c *AppController) Create(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if opts.Name == "" {
-		// TODO (spesnova): response better error
-		c.JSON(rw, http.StatusBadRequest, "error")
-		return
-	}
-
 	app, err := c.CreateApp(opts)
 	if err != nil {
+		// TODO (spesnova): if the reqeust is invalid, server should returns 400 instead of 500
+		//c.JSON(rw, http.StatusBadRequest, "error")
+
 		// TODO (spesnova): response better error
 		c.JSON(rw, http.StatusInternalServerError, "error")
 		return

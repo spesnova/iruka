@@ -353,6 +353,59 @@
           "$ref": "#/definitions/container/definitions/updated_at"
         }
       }
+    },
+    "error": {
+      "$schema": "http://json-schema.org/draft-04/hyper-schema",
+      "title": "Errors",
+      "description": "Failing responses will have an appropriate status and a JSON body containing more details about a particular error.",
+      "stability": "prototype",
+      "strictProperties": true,
+      "type": [
+        "object"
+      ],
+      "definitions": {
+        "identity": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/error/definitions/id"
+            }
+          ]
+        },
+        "id": {
+          "description": "id of error railsed",
+          "example": "bad_request",
+          "readOnly": true,
+          "type": [
+            "string"
+          ]
+        },
+        "message": {
+          "description": "end user message of error raised",
+          "example": "request invalid, validate usage and try again",
+          "readOnly": true,
+          "type": [
+            "string"
+          ]
+        },
+        "url": {
+          "description": "reference url with more information about the error",
+          "example": "https://github.com/spesnova/iruka/blob/master/docs/errors.md",
+          "type": [
+            "string"
+          ]
+        }
+      },
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/error/definitions/id"
+        },
+        "message": {
+          "$ref": "#/definitions/error/definitions/message"
+        },
+        "url": {
+          "$ref": "#/definitions/error/definitions/url"
+        }
+      }
     }
   },
   "properties": {
@@ -361,6 +414,9 @@
     },
     "container": {
       "$ref": "#/definitions/container"
+    },
+    "error": {
+      "$ref": "#/definitions/error"
     }
   },
   "description": "Iruka API v1 Alpha Document",

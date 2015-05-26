@@ -1,0 +1,37 @@
+---
+"$schema": http://json-schema.org/draft-04/hyper-schema
+title: Errors
+description: Failing responses will have an appropriate status and a JSON body containing more details about a particular error.
+stability: prototype
+strictProperties: true
+type:
+- object
+definitions:
+  identity:
+    anyOf:
+    - "$ref": "/schemata/error#/definitions/id"
+  id:
+    description: id of error railsed
+    example: bad_request
+    readOnly: true
+    type:
+    - string
+  message:
+    description: end user message of error raised
+    example: request invalid, validate usage and try again
+    readOnly: true
+    type:
+    - string
+  url:
+    description: reference url with more information about the error
+    example: "https://github.com/spesnova/iruka/blob/master/docs/errors.md"
+    type:
+    - string
+properties:
+  id:
+    "$ref": "/schemata/error#/definitions/id"
+  message:
+    "$ref": "/schemata/error#/definitions/message"
+  url:
+    "$ref": "/schemata/error#/definitions/url"
+id: schemata/error

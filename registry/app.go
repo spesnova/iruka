@@ -1,6 +1,7 @@
 package registry
 
 import (
+	"errors"
 	"path"
 	"time"
 
@@ -16,6 +17,11 @@ const (
 
 // CreateApp creates etcd key-value to store meta data for an app
 func (r *Registry) CreateApp(opts schema.AppCreateOpts) (schema.App, error) {
+	// Validate opts
+	if opts.Name == "" {
+		return schema.App{}, errors.New("name parameter is required, but missing")
+	}
+
 	id := uuid.NewUUID()
 	webURL := id.String() + "." + domain
 
