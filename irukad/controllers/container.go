@@ -92,3 +92,33 @@ func (c *ContainerController) List(rw http.ResponseWriter, r *http.Request) {
 
 	c.JSON(rw, http.StatusOK, containers)
 }
+
+func (c *ContainerController) Update(rw http.ResponseWriter, r *http.Request) {
+	defer r.Body.Close()
+
+	vars := mux.Vars(r)
+	appIdOrName := vars["appIdOrName"]
+	idOrName := vars["idOrName"]
+
+	var opts schema.ContainerUpdateOpts
+	err := json.NewDecoder(r.Body).Decode(&opts)
+	if err != nil {
+		// TODO (spesnova): response better error
+		c.JSON(rw, http.StatusInternalServerError, "error")
+		return
+	}
+
+	container, err := c.ContainerFilteredByApp(appIdOrName, idOrName)
+	if err != nil {
+		c.JSON(rw, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	container, err = c.UpdateContainer(idOrName, opts)
+	if err != nil {
+		c.JSON(rw, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(rw, http.StatusAccepted, container)
+}

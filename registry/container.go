@@ -181,3 +181,48 @@ func (r *Registry) ContainersFilteredByApp(appIdOrName string) ([]schema.Contain
 
 	return containers, nil
 }
+
+// UpdateContainer updates an options of a contaienr
+func (r *Registry) UpdateContainer(idOrName string, opts schema.ContainerUpdateOpts) (schema.Container, error) {
+	// Validate opts
+	if opts.Image == "" {
+		return schema.Container{}, errors.New("image parameter is required, but missing")
+	}
+	if opts.Size == "" {
+		return schema.Container{}, errors.New("size parameter is required, but missing")
+	}
+	if opts.Command == "" {
+		return schema.Container{}, errors.New("command parameter is required, but missing")
+	}
+	if opts.Type == "" {
+		return schema.Container{}, errors.New("type parameter is required, but missing")
+	}
+
+	container, err := r.Container(idOrName)
+	if err != nil {
+		return schema.Container{}, err
+	}
+	container.Image = opts.Image
+	container.Size = opts.Size
+	container.Command = opts.Command
+	container.Type = opts.Type
+	container.UpdatedAt = time.Now()
+
+	j, err := marshal(container)
+	if err != nil {
+		return schema.Container{}, err
+	}
+
+	key := path.Join(r.keyPrefix, containerPrefix, container.ID.String())
+	res, err := r.etcd.Set(key, string(j), 0)
+	if err != nil {
+		return schema.Container{}, err
+	}
+
+	err = unmarshal(res.Node.Value, &container)
+	if err != nil {
+		return schema.Container{}, err
+	}
+
+	return container, nil
+}
