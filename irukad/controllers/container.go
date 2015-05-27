@@ -45,3 +45,13 @@ func (c *ContainerController) Create(rw http.ResponseWriter, r *http.Request) {
 
 	c.JSON(rw, http.StatusCreated, container)
 }
+
+func (c *ContainerController) List(rw http.ResponseWriter, r *http.Request) {
+	containers, err := c.Containers()
+	if err != nil {
+		c.JSON(rw, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(rw, http.StatusOK, containers)
+}

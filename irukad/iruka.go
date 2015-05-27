@@ -37,7 +37,7 @@ func main() {
 	subr.Path("/containers").Methods("POST").HandlerFunc(containerController.Create)
 	//subr.Path("/containers/{idOrName}").Methods("DELETE").HandlerFunc(containerController.Delete)
 	//subr.Path("/containers/{idOrName}").Methods("GET").HandlerFunc(containerController.Info)
-	//subr.Path("/containers").Methods("GET").HandlerFunc(containerController.List)
+	subr.Path("/containers").Methods("GET").HandlerFunc(containerController.List)
 	//subr.Path("/containers/{idOrName}").Methods("PATCH").HandlerFunc(containerController.Update)
 
 	// Middleware stack

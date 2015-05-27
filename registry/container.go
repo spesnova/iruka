@@ -71,3 +71,25 @@ func (r *Registry) CreateContainer(appIdOrName string, opts schema.ContainerCrea
 
 	return container, nil
 }
+
+// Containers returns container collection
+func (r *Registry) Containers() ([]schema.Container, error) {
+	key := path.Join(r.keyPrefix, containerPrefix)
+	res, err := r.etcd.Get(key, false, true)
+	if err != nil {
+		return nil, err
+	}
+
+	containers := make([]schema.Container, len(res.Node.Nodes))
+	for i, node := range res.Node.Nodes {
+		var container schema.Container
+		err = unmarshal(node.Value, &container)
+		if err != nil {
+			return nil, err
+		}
+
+		containers[i] = container
+	}
+
+	return containers, nil
+}
