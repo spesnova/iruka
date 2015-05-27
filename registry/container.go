@@ -14,6 +14,8 @@ const (
 	containerPrefix = "containers"
 )
 
+type Containers []schema.Container
+
 // CreateContainer creates etcd key-value to store container options
 func (r *Registry) CreateContainer(appIdOrName string, opts schema.ContainerCreateOpts) (schema.Container, error) {
 	// Validate opts
@@ -89,6 +91,29 @@ func (r *Registry) Containers() ([]schema.Container, error) {
 		}
 
 		containers[i] = container
+	}
+
+	return containers, nil
+}
+
+// ContainersFilteredByApp returns containers of an app
+func (r *Registry) ContainersFilteredByApp(appIdOrName string) ([]schema.Container, error) {
+	var containers []schema.Container
+
+	app, err := r.App(appIdOrName)
+	if err != nil {
+		return nil, err
+	}
+
+	cs, err := r.Containers()
+	if err != nil {
+		return nil, err
+	}
+
+	for _, c := range cs {
+		if uuid.Equal(c.AppID, app.ID) {
+			containers = append(containers, c)
+		}
 	}
 
 	return containers, nil
