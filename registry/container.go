@@ -75,6 +75,22 @@ func (r *Registry) CreateContainer(appIdOrName string, opts schema.ContainerCrea
 	return container, nil
 }
 
+func (r *Registry) DestroyContainer(idOrName string) (schema.Container, error) {
+	container, err := r.Container(idOrName)
+	if err != nil {
+		return schema.Container{}, err
+	}
+
+	key := path.Join(r.keyPrefix, containerPrefix, container.ID.String())
+
+	_, err = r.etcd.Delete(key, true)
+	if err != nil {
+		return schema.Container{}, errors.New("Failed to delete container: " + container.ID.String())
+	}
+
+	return container, err
+}
+
 // Container returns a container
 func (r *Registry) Container(idOrName string) (schema.Container, error) {
 	var container schema.Container
