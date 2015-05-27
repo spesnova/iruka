@@ -224,9 +224,10 @@ Container encapsulate running processes of an app on iruka.
 | **app_id** | *uuid* | unique identifier of app the container is belong to | `"01234567-89ab-cdef-0123-456789abcdef"` |
 | **name** | *string* | unique name of container | `"example.web.1"` |
 | **image** | *string* | resource URI of the Docker image (including tag) of the container | `"quay.io/spesnova/example:latest"` |
+| **size** | *string* | container size (default “1X”) | `"2X"` |
 | **command** | *string* | command used to start this process | `"bundle exec rails server"` |
 | **ports** | *array* | expose ports | `[80,8080]` |
-| **size** | *string* | container size (default “1X”) | `"2X"` |
+| **type** | *string* | type of process (either "web", "worker", "timer", or "run") | `"web"` |
 | **desired_state** | *string* | desired state of process (either exited or up) | `"up"` |
 | **state** | *string* | current state of process (either exited or up) | `"up"` |
 | **created_at** | *date-time* | when container was created | `"2012-01-01T12:00:00Z"` |
@@ -282,12 +283,13 @@ HTTP/1.1 201 Created
   "app_id": "01234567-89ab-cdef-0123-456789abcdef",
   "name": "example.web.1",
   "image": "quay.io/spesnova/example:latest",
+  "size": "2X",
   "command": "bundle exec rails server",
   "ports": [
     80,
     8080
   ],
-  "size": "2X",
+  "type": "web",
   "desired_state": "up",
   "state": "up",
   "created_at": "2012-01-01T12:00:00Z",
@@ -324,12 +326,13 @@ HTTP/1.1 200 OK
   "app_id": "01234567-89ab-cdef-0123-456789abcdef",
   "name": "example.web.1",
   "image": "quay.io/spesnova/example:latest",
+  "size": "2X",
   "command": "bundle exec rails server",
   "ports": [
     80,
     8080
   ],
-  "size": "2X",
+  "type": "web",
   "desired_state": "up",
   "state": "up",
   "created_at": "2012-01-01T12:00:00Z",
@@ -365,12 +368,13 @@ HTTP/1.1 200 OK
   "app_id": "01234567-89ab-cdef-0123-456789abcdef",
   "name": "example.web.1",
   "image": "quay.io/spesnova/example:latest",
+  "size": "2X",
   "command": "bundle exec rails server",
   "ports": [
     80,
     8080
   ],
-  "size": "2X",
+  "type": "web",
   "desired_state": "up",
   "state": "up",
   "created_at": "2012-01-01T12:00:00Z",
@@ -407,12 +411,13 @@ HTTP/1.1 200 OK
     "app_id": "01234567-89ab-cdef-0123-456789abcdef",
     "name": "example.web.1",
     "image": "quay.io/spesnova/example:latest",
+    "size": "2X",
     "command": "bundle exec rails server",
     "ports": [
       80,
       8080
     ],
-    "size": "2X",
+    "type": "web",
     "desired_state": "up",
     "state": "up",
     "created_at": "2012-01-01T12:00:00Z",
@@ -471,12 +476,13 @@ HTTP/1.1 200 OK
   "app_id": "01234567-89ab-cdef-0123-456789abcdef",
   "name": "example.web.1",
   "image": "quay.io/spesnova/example:latest",
+  "size": "2X",
   "command": "bundle exec rails server",
   "ports": [
     80,
     8080
   ],
-  "size": "2X",
+  "type": "web",
   "desired_state": "up",
   "state": "up",
   "created_at": "2012-01-01T12:00:00Z",

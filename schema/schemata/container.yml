@@ -160,12 +160,14 @@ properties:
     "$ref": "/schemata/container#/definitions/name"
   image:
     "$ref": "/schemata/container#/definitions/image"
+  size:
+    "$ref": "/schemata/container#/definitions/size"
   command:
     "$ref": "/schemata/container#/definitions/command"
   ports:
     "$ref": "/schemata/container#/definitions/ports"
-  size:
-    "$ref": "/schemata/container#/definitions/size"
+  type:
+    "$ref": "/schemata/container#/definitions/type"
   desired_state:
     "$ref": "/schemata/container#/definitions/desired_state"
   state:
