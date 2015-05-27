@@ -46,6 +46,20 @@ func (c *ContainerController) Create(rw http.ResponseWriter, r *http.Request) {
 	c.JSON(rw, http.StatusCreated, container)
 }
 
+func (c *ContainerController) Info(rw http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	appIdOrName := vars["appIdOrName"]
+	idOrName := vars["idOrName"]
+
+	container, err := c.ContainerFilteredByApp(appIdOrName, idOrName)
+	if err != nil {
+		c.JSON(rw, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(rw, http.StatusOK, container)
+}
+
 func (c *ContainerController) List(rw http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	appIdOrName := vars["appIdOrName"]

@@ -74,6 +74,51 @@ func (r *Registry) CreateContainer(appIdOrName string, opts schema.ContainerCrea
 	return container, nil
 }
 
+// Container returns a container
+func (r *Registry) Container(idOrName string) (schema.Container, error) {
+	var container schema.Container
+
+	cs, err := r.Containers()
+	if err != nil {
+		return schema.Container{}, err
+	}
+
+	if uuid.Parse(idOrName) == nil {
+		for _, c := range cs {
+			if c.Name == idOrName {
+				return c, nil
+			}
+		}
+	} else {
+		for _, c := range cs {
+			if uuid.Equal(c.ID, uuid.Parse(idOrName)) {
+				return c, nil
+			}
+		}
+	}
+
+	return container, errors.New("No such container: " + idOrName)
+}
+
+// Container returns a container of an app
+func (r *Registry) ContainerFilteredByApp(appIdOrName, idOrName string) (schema.Container, error) {
+	container, err := r.Container(idOrName)
+	if err != nil {
+		return schema.Container{}, err
+	}
+
+	app, err := r.App(appIdOrName)
+	if err != nil {
+		return schema.Container{}, err
+	}
+
+	if uuid.Equal(container.AppID, app.ID) {
+		return container, nil
+	}
+
+	return container, errors.New("No such container: " + idOrName)
+}
+
 // Containers returns container collection
 func (r *Registry) Containers() ([]schema.Container, error) {
 	key := path.Join(r.keyPrefix, containerPrefix)
