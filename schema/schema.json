@@ -170,6 +170,15 @@
             "string"
           ]
         },
+        "app_id": {
+          "description": "unique identifier of app the container is belong to",
+          "example": "01234567-89ab-cdef-0123-456789abcdef",
+          "readOnly": true,
+          "format": "uuid",
+          "type": [
+            "string"
+          ]
+        },
         "name": {
           "description": "unique name of container",
           "example": "example.web.1",
@@ -221,8 +230,16 @@
             "string"
           ]
         },
+        "desired_state": {
+          "description": "desired state of process (either exited or up)",
+          "example": "up",
+          "readOnly": false,
+          "type": [
+            "string"
+          ]
+        },
         "state": {
-          "description": "current status of process (either exited or up)",
+          "description": "current state of process (either exited or up)",
           "example": "up",
           "readOnly": true,
           "type": [
@@ -248,7 +265,7 @@
       },
       "links": [
         {
-          "description": "Create a new container.",
+          "description": "Create and run a new container.",
           "href": "/apps/{(%23%2Fdefinitions%2Fapp%2Fdefinitions%2Fidentity)}/containers",
           "method": "POST",
           "rel": "create",
@@ -298,7 +315,7 @@
           "title": "List"
         },
         {
-          "description": "Update an existing container.",
+          "description": "Update options and restart an existing container.",
           "href": "/apps/{(%23%2Fdefinitions%2Fapp%2Fdefinitions%2Fidentity)}/containers/{(%23%2Fdefinitions%2Fcontainer%2Fdefinitions%2Fidentity)}",
           "method": "PATCH",
           "rel": "update",
@@ -331,11 +348,17 @@
         "id": {
           "$ref": "#/definitions/container/definitions/id"
         },
+        "app_id": {
+          "$ref": "#/definitions/container/definitions/app_id"
+        },
         "name": {
           "$ref": "#/definitions/container/definitions/name"
         },
         "image": {
           "$ref": "#/definitions/container/definitions/image"
+        },
+        "size": {
+          "$ref": "#/definitions/container/definitions/size"
         },
         "command": {
           "$ref": "#/definitions/container/definitions/command"
@@ -343,8 +366,11 @@
         "ports": {
           "$ref": "#/definitions/container/definitions/ports"
         },
-        "size": {
-          "$ref": "#/definitions/container/definitions/size"
+        "type": {
+          "$ref": "#/definitions/container/definitions/type"
+        },
+        "desired_state": {
+          "$ref": "#/definitions/container/definitions/desired_state"
         },
         "state": {
           "$ref": "#/definitions/container/definitions/state"
