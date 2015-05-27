@@ -18,6 +18,11 @@ type Containers []schema.Container
 
 // CreateContainer creates etcd key-value to store container options
 func (r *Registry) CreateContainer(appIdOrName string, opts schema.ContainerCreateOpts) (schema.Container, error) {
+	app, err := r.App(appIdOrName)
+	if err != nil {
+		return schema.Container{}, err
+	}
+
 	// Validate opts
 	if opts.Image == "" {
 		return schema.Container{}, errors.New("image parameter is required, but missing")
@@ -33,10 +38,6 @@ func (r *Registry) CreateContainer(appIdOrName string, opts schema.ContainerCrea
 	}
 
 	id := uuid.NewUUID()
-	app, err := r.App(appIdOrName)
-	if err != nil {
-		return schema.Container{}, err
-	}
 
 	// TODO (spesnova): Add a varidation container size
 	// Size takes supported value only like "1X", "2X", "3X" ...
@@ -86,7 +87,8 @@ func (r *Registry) Container(idOrName string) (schema.Container, error) {
 	if uuid.Parse(idOrName) == nil {
 		for _, c := range cs {
 			if c.Name == idOrName {
-				return c, nil
+				// TODO (spesnova): support this
+				return schema.Container{}, errors.New("identifying a container by a container name is not supported yet")
 			}
 		}
 	} else {
