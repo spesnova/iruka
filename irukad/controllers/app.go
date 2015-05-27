@@ -55,7 +55,7 @@ func (c *AppController) Delete(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	c.JSON(rw, http.StatusOK, app)
+	c.JSON(rw, http.StatusAccepted, app)
 }
 
 func (c *AppController) Info(rw http.ResponseWriter, r *http.Request) {
@@ -106,5 +106,5 @@ func (c *AppController) Update(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	c.JSON(rw, http.StatusCreated, app)
+	c.JSON(rw, http.StatusAccepted, app)
 }
