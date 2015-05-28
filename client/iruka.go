@@ -1,6 +1,7 @@
 package iruka
 
 import (
+	"bytes"
 	"encoding/json"
 	"net/http"
 )
@@ -16,6 +17,29 @@ func NewClient() *Client {
 	return &Client{
 		URL: url,
 	}
+}
+
+func (c *Client) Post(v interface{}, path string, opts interface{}) error {
+	j, err := json.Marshal(opts)
+	if err != nil {
+		return err
+	}
+
+	req, err := http.NewRequest("POST", c.URL+path, bytes.NewReader(j))
+	if err != nil {
+		return err
+	}
+	req.Header.Set("Content-Type", "application/json")
+
+	client := http.Client{}
+	res, err := client.Do(req)
+	if err != nil {
+		return nil
+	}
+	defer res.Body.Close()
+
+	err = json.NewDecoder(res.Body).Decode(&v)
+	return err
 }
 
 func (c *Client) Get(v interface{}, path string) error {
