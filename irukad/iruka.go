@@ -23,7 +23,7 @@ func main() {
 
 	// Router
 	rou := mux.NewRouter()
-	v1rou := rou.PathPrefix("/api/v1").Subrouter()
+	v1rou := rou.PathPrefix("/api/v1-alpha").Subrouter()
 
 	// App Resource
 	v1rou.Path("/apps").Methods("POST").HandlerFunc(appController.Create)
