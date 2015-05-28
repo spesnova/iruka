@@ -17,28 +17,29 @@ func main() {
 	// Render
 	ren := render.New()
 
-	// Router
-	rou := mux.NewRouter()
-
 	// Controllers
 	appController := controllers.NewAppController(reg, ren)
 	containerController := controllers.NewContainerController(reg, ren)
 
-	// App Resource
-	rou.Path("/apps").Methods("POST").HandlerFunc(appController.Create)
-	rou.Path("/apps/{idOrName}").Methods("DELETE").HandlerFunc(appController.Delete)
-	rou.Path("/apps/{idOrName}").Methods("GET").HandlerFunc(appController.Info)
-	rou.Path("/apps").Methods("GET").HandlerFunc(appController.List)
-	rou.Path("/apps/{idOrName}").Methods("PATCH").HandlerFunc(appController.Update)
+	// Router
+	rou := mux.NewRouter()
+	v1rou := rou.PathPrefix("/api/v1-alpha").Subrouter()
 
-	subr := rou.PathPrefix("/apps/{appIdOrName}").Subrouter()
+	// App Resource
+	v1rou.Path("/apps").Methods("POST").HandlerFunc(appController.Create)
+	v1rou.Path("/apps/{idOrName}").Methods("DELETE").HandlerFunc(appController.Delete)
+	v1rou.Path("/apps/{idOrName}").Methods("GET").HandlerFunc(appController.Info)
+	v1rou.Path("/apps").Methods("GET").HandlerFunc(appController.List)
+	v1rou.Path("/apps/{idOrName}").Methods("PATCH").HandlerFunc(appController.Update)
+
+	v1subrou := v1rou.PathPrefix("/apps/{appIdOrName}").Subrouter()
 
 	// Container Resource
-	subr.Path("/containers").Methods("POST").HandlerFunc(containerController.Create)
-	subr.Path("/containers/{idOrName}").Methods("DELETE").HandlerFunc(containerController.Delete)
-	subr.Path("/containers/{idOrName}").Methods("GET").HandlerFunc(containerController.Info)
-	subr.Path("/containers").Methods("GET").HandlerFunc(containerController.List)
-	subr.Path("/containers/{idOrName}").Methods("PATCH").HandlerFunc(containerController.Update)
+	v1subrou.Path("/containers").Methods("POST").HandlerFunc(containerController.Create)
+	v1subrou.Path("/containers/{idOrName}").Methods("DELETE").HandlerFunc(containerController.Delete)
+	v1subrou.Path("/containers/{idOrName}").Methods("GET").HandlerFunc(containerController.Info)
+	v1subrou.Path("/containers").Methods("GET").HandlerFunc(containerController.List)
+	v1subrou.Path("/containers/{idOrName}").Methods("PATCH").HandlerFunc(containerController.Update)
 
 	// Middleware stack
 	n := negroni.New(
