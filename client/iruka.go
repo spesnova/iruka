@@ -42,6 +42,22 @@ func (c *Client) Post(v interface{}, path string, opts interface{}) error {
 	return err
 }
 
+func (c *Client) Delete(path string) error {
+	req, err := http.NewRequest("DELETE", c.URL+path, nil)
+	if err != nil {
+		return err
+	}
+
+	client := http.Client{}
+	res, err := client.Do(req)
+	if err != nil {
+		return nil
+	}
+	defer res.Body.Close()
+
+	return nil
+}
+
 func (c *Client) Get(v interface{}, path string) error {
 	req, err := http.NewRequest("GET", c.URL+path, nil)
 	if err != nil {

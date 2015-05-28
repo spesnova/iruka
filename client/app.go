@@ -9,6 +9,10 @@ func (c *Client) AppCreate(opts schema.AppCreateOpts) (schema.App, error) {
 	return appRes, c.Post(&appRes, "/apps", opts)
 }
 
+func (c *Client) AppDelete(appIdentity string) error {
+	return c.Delete("/apps/" + appIdentity)
+}
+
 func (c *Client) AppList() ([]schema.App, error) {
 	var appsRes []schema.App
 	return appsRes, c.Get(&appsRes, "/apps")
