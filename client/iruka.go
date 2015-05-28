@@ -11,7 +11,7 @@ type Client struct {
 }
 
 func NewClient() *Client {
-	url := "http://localhost:3000/api/v1"
+	url := "http://localhost:3000/api/v1-alpha"
 
 	return &Client{
 		URL: url,
