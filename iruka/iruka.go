@@ -2,6 +2,7 @@ package main
 
 import (
 	"os"
+	"text/tabwriter"
 
 	"github.com/codegangsta/cli"
 
@@ -10,6 +11,7 @@ import (
 
 var (
 	client *iruka.Client
+	out    *tabwriter.Writer
 )
 
 func main() {
@@ -22,6 +24,9 @@ func main() {
 	app.Commands = Commands
 
 	client = iruka.NewClient()
+
+	out = new(tabwriter.Writer)
+	out.Init(os.Stdout, 0, 8, 2, '\t', 0)
 
 	app.Run(os.Args)
 }

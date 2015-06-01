@@ -8,4 +8,5 @@ var Commands = []cli.Command{
 	cmdApps,
 	cmdCreate,
 	cmdDestroy,
+	cmdPs,
 }
