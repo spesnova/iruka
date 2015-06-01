@@ -7,6 +7,7 @@ import (
 
 	"github.com/spesnova/iruka/irukad/controllers"
 	"github.com/spesnova/iruka/registry"
+	"github.com/spesnova/iruka/scheduler"
 )
 
 func main() {
@@ -14,12 +15,16 @@ func main() {
 	machines := "http://172.17.8.101:4001"
 	reg := registry.NewRegistry(machines, registry.DefaultKeyPrefix)
 
+	// Scheduler
+	url := "http://172.17.8.101:4002"
+	sch := scheduler.NewScheduler(url)
+
 	// Render
 	ren := render.New()
 
 	// Controllers
 	appController := controllers.NewAppController(reg, ren)
-	containerController := controllers.NewContainerController(reg, ren)
+	containerController := controllers.NewContainerController(reg, ren, sch)
 
 	// Router
 	rou := mux.NewRouter()
