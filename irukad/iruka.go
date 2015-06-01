@@ -54,5 +54,7 @@ func main() {
 
 	n.UseHandler(rou)
 
+	go containerController.UpdateStates()
+
 	n.Run(":8080")
 }

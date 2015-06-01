@@ -226,3 +226,35 @@ func (r *Registry) UpdateContainer(idOrName string, opts schema.ContainerUpdateO
 
 	return container, nil
 }
+
+// UpdateContainerState updates an options of a contaienr
+func (r *Registry) UpdateContainerState(idOrName, state string) (schema.Container, error) {
+	if state == "" {
+		return schema.Container{}, errors.New("state parameter is required, but missing")
+	}
+
+	container, err := r.Container(idOrName)
+	if err != nil {
+		return schema.Container{}, err
+	}
+	container.State = state
+	container.UpdatedAt = time.Now()
+
+	j, err := marshal(container)
+	if err != nil {
+		return schema.Container{}, err
+	}
+
+	key := path.Join(r.keyPrefix, containerPrefix, container.ID.String())
+	res, err := r.etcd.Set(key, string(j), 0)
+	if err != nil {
+		return schema.Container{}, err
+	}
+
+	err = unmarshal(res.Node.Value, &container)
+	if err != nil {
+		return schema.Container{}, err
+	}
+
+	return container, nil
+}

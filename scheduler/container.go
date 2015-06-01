@@ -21,6 +21,25 @@ func (s *Scheduler) DestroyContainer(c schema.Container) error {
 	return s.fleet.Destroy(c.Name + ".service")
 }
 
+func (s *Scheduler) Containers() ([]schema.Container, error) {
+	var containers []schema.Container
+
+	units, err := s.fleet.Units()
+	if err != nil {
+		return nil, err
+	}
+
+	for _, unit := range units {
+		container := schema.Container{
+			Name:  strings.Replace(unit.Name, ".service", "", -1),
+			State: unit.CurrentState,
+		}
+		containers = append(containers, container)
+	}
+
+	return containers, nil
+}
+
 func (s *Scheduler) containerToUnitOptions(c schema.Container) ([]*fleet.UnitOption, error) {
 	return []*fleet.UnitOption{
 		// Unit section example:
