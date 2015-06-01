@@ -3,6 +3,7 @@ package registry
 import (
 	"errors"
 	"path"
+	"strings"
 	"time"
 
 	"code.google.com/p/go-uuid/uuid"
@@ -48,7 +49,7 @@ func (r *Registry) CreateContainer(appIdOrName string, opts schema.ContainerCrea
 	container := schema.Container{
 		ID:          id,
 		AppID:       app.ID,
-		Name:        app.Name + "." + opts.Type, // TODO (spesnova): add number like `examle.run.1`
+		Name:        strings.Join([]string{app.Name, opts.Type, id.String()}, "."),
 		Image:       opts.Image,
 		Size:        opts.Size,
 		Command:     opts.Command,
