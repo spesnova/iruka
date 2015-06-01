@@ -9,4 +9,5 @@ var Commands = []cli.Command{
 	cmdCreate,
 	cmdDestroy,
 	cmdPs,
+	cmdDeploy,
 }

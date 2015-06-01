@@ -1,8 +1,12 @@
 package main
 
 import (
+	"errors"
+	"io/ioutil"
 	"strconv"
 	"time"
+
+	"github.com/go-yaml/yaml"
 )
 
 func timeDurationInWords(t time.Time) string {
@@ -23,4 +27,18 @@ func timeDurationInWords(t time.Time) string {
 		unit = "hours"
 	}
 	return strconv.Itoa(int(d)) + " " + unit
+}
+
+func parseYamlFile(filename string, v interface{}) error {
+	buf, err := ioutil.ReadFile(filename)
+	if err != nil {
+		return errors.New("Can not read " + filename)
+	}
+
+	err = yaml.Unmarshal(buf, v)
+	if err != nil {
+		return errors.New("Can not parse " + filename)
+	}
+
+	return nil
 }
