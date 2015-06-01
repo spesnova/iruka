@@ -2,22 +2,30 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/gorilla/mux"
 	"github.com/unrolled/render"
 
 	"github.com/spesnova/iruka/registry"
+	"github.com/spesnova/iruka/scheduler"
 	"github.com/spesnova/iruka/schema"
 )
 
+const (
+	interval = 5
+)
+
 type ContainerController struct {
-	*registry.Registry
+	reg *registry.Registry
 	*render.Render
+	sch *scheduler.Scheduler
 }
 
-func NewContainerController(reg *registry.Registry, ren *render.Render) ContainerController {
-	return ContainerController{reg, ren}
+func NewContainerController(reg *registry.Registry, ren *render.Render, sch *scheduler.Scheduler) ContainerController {
+	return ContainerController{reg, ren, sch}
 }
 
 func (c *ContainerController) Create(rw http.ResponseWriter, r *http.Request) {
@@ -33,12 +41,18 @@ func (c *ContainerController) Create(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	container, err := c.CreateContainer(appIdOrName, opts)
+	container, err := c.reg.CreateContainer(appIdOrName, opts)
 	if err != nil {
 		// TODO (spesnova): if the reqeust is invalid, server should returns 400 instead of 500
 		//c.JSON(rw, http.StatusBadRequest, "error")
 
 		// TODO (spesnova): response better error
+		c.JSON(rw, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	err = c.sch.CreateContainer(container)
+	if err != nil {
 		c.JSON(rw, http.StatusInternalServerError, err.Error())
 		return
 	}
@@ -51,13 +65,19 @@ func (c *ContainerController) Delete(rw http.ResponseWriter, r *http.Request) {
 	appIdOrName := vars["appIdOrName"]
 	idOrName := vars["idOrName"]
 
-	container, err := c.ContainerFilteredByApp(appIdOrName, idOrName)
+	container, err := c.reg.ContainerFilteredByApp(appIdOrName, idOrName)
 	if err != nil {
 		c.JSON(rw, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	_, err = c.DestroyContainer(container.ID.String())
+	_, err = c.reg.DestroyContainer(container.ID.String())
+	if err != nil {
+		c.JSON(rw, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	err = c.sch.DestroyContainer(container)
 	if err != nil {
 		c.JSON(rw, http.StatusInternalServerError, err.Error())
 		return
@@ -71,7 +91,7 @@ func (c *ContainerController) Info(rw http.ResponseWriter, r *http.Request) {
 	appIdOrName := vars["appIdOrName"]
 	idOrName := vars["idOrName"]
 
-	container, err := c.ContainerFilteredByApp(appIdOrName, idOrName)
+	container, err := c.reg.ContainerFilteredByApp(appIdOrName, idOrName)
 	if err != nil {
 		c.JSON(rw, http.StatusInternalServerError, err.Error())
 		return
@@ -84,7 +104,7 @@ func (c *ContainerController) List(rw http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	appIdOrName := vars["appIdOrName"]
 
-	containers, err := c.ContainersFilteredByApp(appIdOrName)
+	containers, err := c.reg.ContainersFilteredByApp(appIdOrName)
 	if err != nil {
 		c.JSON(rw, http.StatusInternalServerError, err.Error())
 		return
@@ -108,17 +128,34 @@ func (c *ContainerController) Update(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	container, err := c.ContainerFilteredByApp(appIdOrName, idOrName)
+	container, err := c.reg.ContainerFilteredByApp(appIdOrName, idOrName)
 	if err != nil {
 		c.JSON(rw, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	container, err = c.UpdateContainer(idOrName, opts)
+	container, err = c.reg.UpdateContainer(idOrName, opts)
 	if err != nil {
 		c.JSON(rw, http.StatusInternalServerError, err.Error())
 		return
 	}
 
 	c.JSON(rw, http.StatusAccepted, container)
+}
+
+func (c *ContainerController) UpdateStates() {
+	for {
+		containers, err := c.sch.Containers()
+		if err != nil {
+			fmt.Println(err.Error())
+		}
+
+		for _, container := range containers {
+			_, err := c.reg.UpdateContainerState(container.Name, container.State)
+			if err != nil {
+				fmt.Println(err.Error())
+			}
+		}
+		time.Sleep(interval * time.Second)
+	}
 }

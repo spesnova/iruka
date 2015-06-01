@@ -3,6 +3,7 @@ package registry
 import (
 	"errors"
 	"path"
+	"strings"
 	"time"
 
 	"code.google.com/p/go-uuid/uuid"
@@ -48,7 +49,7 @@ func (r *Registry) CreateContainer(appIdOrName string, opts schema.ContainerCrea
 	container := schema.Container{
 		ID:          id,
 		AppID:       app.ID,
-		Name:        app.Name + "." + opts.Type, // TODO (spesnova): add number like `examle.run.1`
+		Name:        strings.Join([]string{app.Name, opts.Type, id.String()}, "."),
 		Image:       opts.Image,
 		Size:        opts.Size,
 		Command:     opts.Command,
@@ -103,8 +104,7 @@ func (r *Registry) Container(idOrName string) (schema.Container, error) {
 	if uuid.Parse(idOrName) == nil {
 		for _, c := range cs {
 			if c.Name == idOrName {
-				// TODO (spesnova): support this
-				return schema.Container{}, errors.New("identifying a container by a container name is not supported yet")
+				return c, nil
 			}
 		}
 	} else {
@@ -206,6 +206,38 @@ func (r *Registry) UpdateContainer(idOrName string, opts schema.ContainerUpdateO
 	container.Size = opts.Size
 	container.Command = opts.Command
 	container.Type = opts.Type
+	container.UpdatedAt = time.Now()
+
+	j, err := marshal(container)
+	if err != nil {
+		return schema.Container{}, err
+	}
+
+	key := path.Join(r.keyPrefix, containerPrefix, container.ID.String())
+	res, err := r.etcd.Set(key, string(j), 0)
+	if err != nil {
+		return schema.Container{}, err
+	}
+
+	err = unmarshal(res.Node.Value, &container)
+	if err != nil {
+		return schema.Container{}, err
+	}
+
+	return container, nil
+}
+
+// UpdateContainerState updates an options of a contaienr
+func (r *Registry) UpdateContainerState(idOrName, state string) (schema.Container, error) {
+	if state == "" {
+		return schema.Container{}, errors.New("state parameter is required, but missing")
+	}
+
+	container, err := r.Container(idOrName)
+	if err != nil {
+		return schema.Container{}, err
+	}
+	container.State = state
 	container.UpdatedAt = time.Now()
 
 	j, err := marshal(container)
