@@ -104,8 +104,7 @@ func (r *Registry) Container(idOrName string) (schema.Container, error) {
 	if uuid.Parse(idOrName) == nil {
 		for _, c := range cs {
 			if c.Name == idOrName {
-				// TODO (spesnova): support this
-				return schema.Container{}, errors.New("identifying a container by a container name is not supported yet")
+				return c, nil
 			}
 		}
 	} else {
