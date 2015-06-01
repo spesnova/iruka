@@ -17,6 +17,10 @@ func (s *Scheduler) CreateContainer(c schema.Container) error {
 	return s.fleet.Submit(c.Name+".service", opts, "launched")
 }
 
+func (s *Scheduler) DestroyContainer(c schema.Container) error {
+	return s.fleet.Destroy(c.Name + ".service")
+}
+
 func (s *Scheduler) containerToUnitOptions(c schema.Container) ([]*fleet.UnitOption, error) {
 	return []*fleet.UnitOption{
 		// Unit section example:

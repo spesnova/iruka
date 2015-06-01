@@ -71,6 +71,12 @@ func (c *ContainerController) Delete(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	err = c.sch.DestroyContainer(container)
+	if err != nil {
+		c.JSON(rw, http.StatusInternalServerError, err.Error())
+		return
+	}
+
 	c.JSON(rw, http.StatusAccepted, container)
 }
 
