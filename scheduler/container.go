@@ -1,6 +1,7 @@
 package scheduler
 
 import (
+	"strconv"
 	"strings"
 
 	"github.com/spesnova/go-fleet/fleet"
@@ -127,7 +128,11 @@ func configVarsOptions(c schema.Container) string {
 }
 
 func portOptions(c schema.Container) string {
-	return ""
+	var opts []string
+	for _, port := range c.Ports {
+		opts = append(opts, strings.Join([]string{"-p", strconv.Itoa(port)}, " "))
+	}
+	return strings.Join(opts, " ")
 }
 
 func sizeOption(c schema.Container) string {
