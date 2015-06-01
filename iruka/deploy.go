@@ -36,6 +36,8 @@ EXAMPLE:
 }
 
 func runDeploy(c *cli.Context) {
+	appIdentity := getAppIdentity(c)
+
 	var p Procs
 	err := parseYamlFile("iruka.yml", &p)
 	if err != nil {
@@ -43,15 +45,9 @@ func runDeploy(c *cli.Context) {
 		os.Exit(1)
 	}
 
-	if p.App == "" {
-		fmt.Println("No app specified")
-		fmt.Println("Run this command from an app folder or specify which app to use with --app APP.")
-		os.Exit(1)
-	}
-
 	fmt.Printf("-----> Deploying containers... ")
 
-	containers, err := client.ContainerList(p.App)
+	containers, err := client.ContainerList(appIdentity)
 	if err != nil {
 		fmt.Println(err.Error())
 		os.Exit(1)
@@ -66,12 +62,12 @@ func runDeploy(c *cli.Context) {
 	}
 
 	if len(containers) == 0 {
-		err = client.ContainerCreate(p.App, opts)
+		err = client.ContainerCreate(appIdentity, opts)
 	} else {
 		for _, c := range containers {
-			err = client.ContainerDelete(p.App, c.ID.String())
+			err = client.ContainerDelete(appIdentity, c.ID.String())
 		}
-		client.ContainerCreate(p.App, opts)
+		client.ContainerCreate(appIdentity, opts)
 	}
 	if err != nil {
 		fmt.Println(err.Error())

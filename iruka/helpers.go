@@ -2,12 +2,40 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"io/ioutil"
+	"os"
 	"strconv"
 	"time"
 
+	"github.com/codegangsta/cli"
 	"github.com/go-yaml/yaml"
 )
+
+func getAppIdentity(c *cli.Context) string {
+	var appIdentity string
+
+	_, err := os.Stat("iruka.yml")
+	if err != nil {
+		appIdentity = c.String("app")
+	} else {
+		var p Procs
+		err := parseYamlFile("iruka.yml", &p)
+		if err != nil {
+			fmt.Println("Failed to parse iruka.yml")
+			os.Exit(1)
+		}
+		appIdentity = p.App
+	}
+
+	if appIdentity == "" {
+		fmt.Println("No app specified")
+		fmt.Println("Run this command from an app folder or specify which app to use with --app APP.")
+		os.Exit(1)
+	}
+
+	return appIdentity
+}
 
 func timeDurationInWords(t time.Time) string {
 	duration := time.Now().Sub(t)

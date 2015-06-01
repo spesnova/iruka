@@ -22,7 +22,8 @@ EXAMPLE:
 }
 
 func runPs(c *cli.Context) {
-	appIdentity := c.String("app")
+	appIdentity := getAppIdentity(c)
+
 	containers, err := client.ContainerList(appIdentity)
 	if err != nil {
 		fmt.Println(err)
