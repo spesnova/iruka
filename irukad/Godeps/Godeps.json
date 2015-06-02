@@ -24,6 +24,14 @@
 		{
 			"ImportPath": "github.com/gorilla/mux",
 			"Rev": "94903de8c98a68d8b4483c529b26a5d146e386a2"
+		},
+		{
+			"ImportPath": "github.com/spesnova/go-fleet/fleet",
+			"Rev": "2f3861ac991209b2964d7e3817ae1c2d6ecd3295"
+		},
+		{
+			"ImportPath": "github.com/unrolled/render",
+			"Rev": "83f2ba57c12cec399ef137457b1957e41ef0bbe8"
 		}
 	]
 }
