@@ -97,6 +97,9 @@ func (r *Registry) Apps() ([]schema.App, error) {
 	key := path.Join(r.keyPrefix, appPrefix)
 	res, err := r.etcd.Get(key, false, true)
 	if err != nil {
+		if isKeyNotFound(err) {
+			return nil, nil
+		}
 		return nil, err
 	}
 

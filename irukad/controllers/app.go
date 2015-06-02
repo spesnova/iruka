@@ -79,6 +79,11 @@ func (c *AppController) List(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if len(apps) == 0 {
+		c.JSON(rw, http.StatusOK, []schema.App{})
+		return
+	}
+
 	c.JSON(rw, http.StatusOK, apps)
 }
 

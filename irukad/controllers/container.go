@@ -110,6 +110,11 @@ func (c *ContainerController) List(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if containers == nil {
+		c.JSON(rw, http.StatusOK, []schema.Container{})
+		return
+	}
+
 	c.JSON(rw, http.StatusOK, containers)
 }
 

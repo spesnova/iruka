@@ -142,6 +142,9 @@ func (r *Registry) Containers() ([]schema.Container, error) {
 	key := path.Join(r.keyPrefix, containerPrefix)
 	res, err := r.etcd.Get(key, false, true)
 	if err != nil {
+		if isKeyNotFound(err) {
+			return nil, nil
+		}
 		return nil, err
 	}
 
@@ -171,6 +174,10 @@ func (r *Registry) ContainersFilteredByApp(appIdOrName string) ([]schema.Contain
 	cs, err := r.Containers()
 	if err != nil {
 		return nil, err
+	}
+
+	if cs == nil {
+		return nil, nil
 	}
 
 	for _, c := range cs {
