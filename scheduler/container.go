@@ -15,7 +15,7 @@ func (s *Scheduler) CreateContainer(c schema.Container) error {
 	if err != nil {
 		return err
 	}
-	return s.fleet.Submit(c.Name+".service", opts, "launched")
+	return s.fleet.Start(c.Name+".service", opts)
 }
 
 func (s *Scheduler) DestroyContainer(c schema.Container) error {
