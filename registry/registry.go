@@ -21,7 +21,7 @@ type Registry struct {
 
 func NewRegistry(machines string, keyPrefix string) *Registry {
 	if os.Getenv("IRUKA_ETCD_MACHINES") != "" {
-		machines = os.Getenv("IRUKA_ETCD_MACHIENS")
+		machines = os.Getenv("IRUKA_ETCD_MACHINES")
 	}
 
 	if machines == "" {
