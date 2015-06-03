@@ -16,7 +16,7 @@ func main() {
 	reg := registry.NewRegistry(machines, registry.DefaultKeyPrefix)
 
 	// Scheduler
-	url := "http://172.17.8.101:4002"
+	url := scheduler.DefaultAPIURL
 	sch := scheduler.NewScheduler(url)
 
 	// Render
