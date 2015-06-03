@@ -12,11 +12,11 @@ import (
 
 func main() {
 	// Registry
-	machines := "http://172.17.8.101:4001"
+	machines := registry.DefaultMachines
 	reg := registry.NewRegistry(machines, registry.DefaultKeyPrefix)
 
 	// Scheduler
-	url := "http://172.17.8.101:4002"
+	url := scheduler.DefaultAPIURL
 	sch := scheduler.NewScheduler(url)
 
 	// Render

@@ -3,12 +3,16 @@ package registry
 import (
 	"encoding/json"
 	"fmt"
+	"os"
 	"strings"
 
 	"github.com/coreos/go-etcd/etcd"
 )
 
-const DefaultKeyPrefix = "/iruka/"
+const (
+	DefaultMachines  = "http://localhost:4001"
+	DefaultKeyPrefix = "/iruka/"
+)
 
 type Registry struct {
 	etcd      etcd.Client
@@ -16,6 +20,14 @@ type Registry struct {
 }
 
 func NewRegistry(machines string, keyPrefix string) *Registry {
+	if os.Getenv("IRUKA_ETCD_MACHINES") != "" {
+		machines = os.Getenv("IRUKA_ETCD_MACHIENS")
+	}
+
+	if machines == "" {
+		machines = DefaultMachines
+	}
+
 	m := strings.Split(machines, ",")
 	etcdClient := *etcd.NewClient(m)
 	return &Registry{etcdClient, keyPrefix}

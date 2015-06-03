@@ -23,7 +23,7 @@ func main() {
 	app.Email = "spesnova@gmail.com"
 	app.Commands = Commands
 
-	client = iruka.NewClient()
+	client = iruka.NewClient(iruka.DefaultAPIURL)
 
 	out = new(tabwriter.Writer)
 	out.Init(os.Stdout, 0, 8, 2, '\t', 0)
