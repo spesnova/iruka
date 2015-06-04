@@ -1,0 +1,46 @@
+#
+# git
+#
+.git
+.gitignore
+
+#
+# docs
+#
+docs
+*.md
+LICENSE
+
+#
+# script
+#
+script
+
+#
+# Bundler
+#
+Gemfile
+Gemfile.lock
+.bundle
+bin
+vendor
+
+#
+# coreos-vagrant
+#
+coreos
+
+#
+# gin
+#
+gin-bin
+
+#
+# vim
+#
+*.swp
+
+#
+# OSX
+#
+.DS_Store
