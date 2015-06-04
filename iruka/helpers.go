@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/codegangsta/cli"
-	"github.com/go-yaml/yaml"
+	"gopkg.in/yaml.v2"
 )
 
 func getAppIdentity(c *cli.Context) string {
