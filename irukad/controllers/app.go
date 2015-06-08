@@ -46,9 +46,9 @@ func (c *AppController) Create(rw http.ResponseWriter, r *http.Request) {
 
 func (c *AppController) Delete(rw http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	idOrName := vars["idOrName"]
+	identity := vars["identity"]
 
-	app, err := c.DestroyApp(idOrName)
+	app, err := c.DestroyApp(identity)
 	if err != nil {
 		// TODO (spesnova): separate 404 and 500 error
 		c.JSON(rw, http.StatusInternalServerError, err.Error())
@@ -60,9 +60,9 @@ func (c *AppController) Delete(rw http.ResponseWriter, r *http.Request) {
 
 func (c *AppController) Info(rw http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	idOrName := vars["idOrName"]
+	identity := vars["identity"]
 
-	app, err := c.App(idOrName)
+	app, err := c.App(identity)
 	if err != nil {
 		// TODO (spesnova): separate 404 and 500 error
 		c.JSON(rw, http.StatusInternalServerError, err.Error())
@@ -91,7 +91,7 @@ func (c *AppController) Update(rw http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 
 	vars := mux.Vars(r)
-	idOrName := vars["idOrName"]
+	identity := vars["identity"]
 
 	var opts schema.AppUpdateOpts
 	err := json.NewDecoder(r.Body).Decode(&opts)
@@ -101,7 +101,7 @@ func (c *AppController) Update(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	app, err := c.UpdateApp(idOrName, opts)
+	app, err := c.UpdateApp(identity, opts)
 	if err != nil {
 		// TODO (spesnova): if the reqeust is invalid, server should returns 400 instead of 500
 		//c.JSON(rw, http.StatusBadRequest, "error")

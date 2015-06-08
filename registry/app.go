@@ -51,8 +51,8 @@ func (r *Registry) CreateApp(opts schema.AppCreateOpts) (schema.App, error) {
 }
 
 // DestroyApp removes an etcd key-value
-func (r *Registry) DestroyApp(idOrName string) (schema.App, error) {
-	app, err := r.App(idOrName)
+func (r *Registry) DestroyApp(identity string) (schema.App, error) {
+	app, err := r.App(identity)
 	if err != nil {
 		return schema.App{}, err
 	}
@@ -68,7 +68,7 @@ func (r *Registry) DestroyApp(idOrName string) (schema.App, error) {
 }
 
 // App returns an app, you can find it by id or name
-func (r *Registry) App(idOrName string) (schema.App, error) {
+func (r *Registry) App(identity string) (schema.App, error) {
 	var app schema.App
 
 	apps, err := r.Apps()
@@ -76,21 +76,21 @@ func (r *Registry) App(idOrName string) (schema.App, error) {
 		return app, err
 	}
 
-	if uuid.Parse(idOrName) == nil {
+	if uuid.Parse(identity) == nil {
 		for _, app := range apps {
-			if app.Name == idOrName {
+			if app.Name == identity {
 				return app, nil
 			}
 		}
 	} else {
 		for _, app := range apps {
-			if uuid.Equal(app.ID, uuid.Parse(idOrName)) {
+			if uuid.Equal(app.ID, uuid.Parse(identity)) {
 				return app, nil
 			}
 		}
 	}
 
-	return app, errors.New("No such app: " + idOrName)
+	return app, errors.New("No such app: " + identity)
 }
 
 func (r *Registry) Apps() ([]schema.App, error) {
@@ -118,13 +118,13 @@ func (r *Registry) Apps() ([]schema.App, error) {
 }
 
 // UpdateApp updates an app
-func (r *Registry) UpdateApp(idOrName string, opts schema.AppUpdateOpts) (schema.App, error) {
+func (r *Registry) UpdateApp(identity string, opts schema.AppUpdateOpts) (schema.App, error) {
 	// Validate opts
 	if opts.Name == "" {
 		return schema.App{}, errors.New("name parameter is required, but missing")
 	}
 
-	app, err := r.App(idOrName)
+	app, err := r.App(identity)
 	if err != nil {
 		return schema.App{}, err
 	}

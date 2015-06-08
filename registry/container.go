@@ -18,8 +18,8 @@ const (
 type Containers []schema.Container
 
 // CreateContainer creates etcd key-value to store container options
-func (r *Registry) CreateContainer(appIdOrName string, opts schema.ContainerCreateOpts) (schema.Container, error) {
-	app, err := r.App(appIdOrName)
+func (r *Registry) CreateContainer(appIdentity string, opts schema.ContainerCreateOpts) (schema.Container, error) {
+	app, err := r.App(appIdentity)
 	if err != nil {
 		return schema.Container{}, err
 	}
@@ -76,8 +76,8 @@ func (r *Registry) CreateContainer(appIdOrName string, opts schema.ContainerCrea
 	return container, nil
 }
 
-func (r *Registry) DestroyContainer(idOrName string) (schema.Container, error) {
-	container, err := r.Container(idOrName)
+func (r *Registry) DestroyContainer(identity string) (schema.Container, error) {
+	container, err := r.Container(identity)
 	if err != nil {
 		return schema.Container{}, err
 	}
@@ -93,7 +93,7 @@ func (r *Registry) DestroyContainer(idOrName string) (schema.Container, error) {
 }
 
 // Container returns a container
-func (r *Registry) Container(idOrName string) (schema.Container, error) {
+func (r *Registry) Container(identity string) (schema.Container, error) {
 	var container schema.Container
 
 	cs, err := r.Containers()
@@ -101,31 +101,31 @@ func (r *Registry) Container(idOrName string) (schema.Container, error) {
 		return schema.Container{}, err
 	}
 
-	if uuid.Parse(idOrName) == nil {
+	if uuid.Parse(identity) == nil {
 		for _, c := range cs {
-			if c.Name == idOrName {
+			if c.Name == identity {
 				return c, nil
 			}
 		}
 	} else {
 		for _, c := range cs {
-			if uuid.Equal(c.ID, uuid.Parse(idOrName)) {
+			if uuid.Equal(c.ID, uuid.Parse(identity)) {
 				return c, nil
 			}
 		}
 	}
 
-	return container, errors.New("No such container: " + idOrName)
+	return container, errors.New("No such container: " + identity)
 }
 
 // Container returns a container of an app
-func (r *Registry) ContainerFilteredByApp(appIdOrName, idOrName string) (schema.Container, error) {
-	container, err := r.Container(idOrName)
+func (r *Registry) ContainerFilteredByApp(appIdentity, identity string) (schema.Container, error) {
+	container, err := r.Container(identity)
 	if err != nil {
 		return schema.Container{}, err
 	}
 
-	app, err := r.App(appIdOrName)
+	app, err := r.App(appIdentity)
 	if err != nil {
 		return schema.Container{}, err
 	}
@@ -134,7 +134,7 @@ func (r *Registry) ContainerFilteredByApp(appIdOrName, idOrName string) (schema.
 		return container, nil
 	}
 
-	return container, errors.New("No such container: " + idOrName)
+	return container, errors.New("No such container: " + identity)
 }
 
 // Containers returns container collection
@@ -163,10 +163,10 @@ func (r *Registry) Containers() ([]schema.Container, error) {
 }
 
 // ContainersFilteredByApp returns containers of an app
-func (r *Registry) ContainersFilteredByApp(appIdOrName string) ([]schema.Container, error) {
+func (r *Registry) ContainersFilteredByApp(appIdentity string) ([]schema.Container, error) {
 	var containers []schema.Container
 
-	app, err := r.App(appIdOrName)
+	app, err := r.App(appIdentity)
 	if err != nil {
 		return nil, err
 	}
@@ -190,7 +190,7 @@ func (r *Registry) ContainersFilteredByApp(appIdOrName string) ([]schema.Contain
 }
 
 // UpdateContainer updates an options of a contaienr
-func (r *Registry) UpdateContainer(idOrName string, opts schema.ContainerUpdateOpts) (schema.Container, error) {
+func (r *Registry) UpdateContainer(identity string, opts schema.ContainerUpdateOpts) (schema.Container, error) {
 	// Validate opts
 	if opts.Image == "" {
 		return schema.Container{}, errors.New("image parameter is required, but missing")
@@ -205,7 +205,7 @@ func (r *Registry) UpdateContainer(idOrName string, opts schema.ContainerUpdateO
 		return schema.Container{}, errors.New("type parameter is required, but missing")
 	}
 
-	container, err := r.Container(idOrName)
+	container, err := r.Container(identity)
 	if err != nil {
 		return schema.Container{}, err
 	}
@@ -235,12 +235,12 @@ func (r *Registry) UpdateContainer(idOrName string, opts schema.ContainerUpdateO
 }
 
 // UpdateContainerState updates an options of a contaienr
-func (r *Registry) UpdateContainerState(idOrName, state string) (schema.Container, error) {
+func (r *Registry) UpdateContainerState(identity, state string) (schema.Container, error) {
 	if state == "" {
 		return schema.Container{}, errors.New("state parameter is required, but missing")
 	}
 
-	container, err := r.Container(idOrName)
+	container, err := r.Container(identity)
 	if err != nil {
 		return schema.Container{}, err
 	}

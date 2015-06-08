@@ -32,19 +32,19 @@ func main() {
 
 	// App Resource
 	v1rou.Path("/apps").Methods("POST").HandlerFunc(appController.Create)
-	v1rou.Path("/apps/{idOrName}").Methods("DELETE").HandlerFunc(appController.Delete)
-	v1rou.Path("/apps/{idOrName}").Methods("GET").HandlerFunc(appController.Info)
+	v1rou.Path("/apps/{identity}").Methods("DELETE").HandlerFunc(appController.Delete)
+	v1rou.Path("/apps/{identity}").Methods("GET").HandlerFunc(appController.Info)
 	v1rou.Path("/apps").Methods("GET").HandlerFunc(appController.List)
-	v1rou.Path("/apps/{idOrName}").Methods("PATCH").HandlerFunc(appController.Update)
+	v1rou.Path("/apps/{identity}").Methods("PATCH").HandlerFunc(appController.Update)
 
-	v1subrou := v1rou.PathPrefix("/apps/{appIdOrName}").Subrouter()
+	v1subrou := v1rou.PathPrefix("/apps/{appIdentity}").Subrouter()
 
 	// Container Resource
 	v1subrou.Path("/containers").Methods("POST").HandlerFunc(containerController.Create)
-	v1subrou.Path("/containers/{idOrName}").Methods("DELETE").HandlerFunc(containerController.Delete)
-	v1subrou.Path("/containers/{idOrName}").Methods("GET").HandlerFunc(containerController.Info)
+	v1subrou.Path("/containers/{identity}").Methods("DELETE").HandlerFunc(containerController.Delete)
+	v1subrou.Path("/containers/{identity}").Methods("GET").HandlerFunc(containerController.Info)
 	v1subrou.Path("/containers").Methods("GET").HandlerFunc(containerController.List)
-	v1subrou.Path("/containers/{idOrName}").Methods("PATCH").HandlerFunc(containerController.Update)
+	v1subrou.Path("/containers/{identity}").Methods("PATCH").HandlerFunc(containerController.Update)
 
 	// Middleware stack
 	n := negroni.New(
