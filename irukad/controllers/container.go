@@ -32,7 +32,7 @@ func (c *ContainerController) Create(rw http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 
 	vars := mux.Vars(r)
-	appIdOrName := vars["appIdOrName"]
+	appIdentity := vars["appIdentity"]
 
 	var opts schema.ContainerCreateOpts
 	err := json.NewDecoder(r.Body).Decode(&opts)
@@ -41,7 +41,7 @@ func (c *ContainerController) Create(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	container, err := c.reg.CreateContainer(appIdOrName, opts)
+	container, err := c.reg.CreateContainer(appIdentity, opts)
 	if err != nil {
 		// TODO (spesnova): if the reqeust is invalid, server should returns 400 instead of 500
 		//c.JSON(rw, http.StatusBadRequest, "error")
@@ -62,10 +62,10 @@ func (c *ContainerController) Create(rw http.ResponseWriter, r *http.Request) {
 
 func (c *ContainerController) Delete(rw http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	appIdOrName := vars["appIdOrName"]
-	idOrName := vars["idOrName"]
+	appIdentity := vars["appIdentity"]
+	identity := vars["identity"]
 
-	container, err := c.reg.ContainerFilteredByApp(appIdOrName, idOrName)
+	container, err := c.reg.ContainerFilteredByApp(appIdentity, identity)
 	if err != nil {
 		c.JSON(rw, http.StatusInternalServerError, err.Error())
 		return
@@ -88,10 +88,10 @@ func (c *ContainerController) Delete(rw http.ResponseWriter, r *http.Request) {
 
 func (c *ContainerController) Info(rw http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	appIdOrName := vars["appIdOrName"]
-	idOrName := vars["idOrName"]
+	appIdentity := vars["appIdentity"]
+	identity := vars["identity"]
 
-	container, err := c.reg.ContainerFilteredByApp(appIdOrName, idOrName)
+	container, err := c.reg.ContainerFilteredByApp(appIdentity, identity)
 	if err != nil {
 		c.JSON(rw, http.StatusInternalServerError, err.Error())
 		return
@@ -102,9 +102,9 @@ func (c *ContainerController) Info(rw http.ResponseWriter, r *http.Request) {
 
 func (c *ContainerController) List(rw http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	appIdOrName := vars["appIdOrName"]
+	appIdentity := vars["appIdentity"]
 
-	containers, err := c.reg.ContainersFilteredByApp(appIdOrName)
+	containers, err := c.reg.ContainersFilteredByApp(appIdentity)
 	if err != nil {
 		c.JSON(rw, http.StatusInternalServerError, err.Error())
 		return
@@ -122,8 +122,8 @@ func (c *ContainerController) Update(rw http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 
 	vars := mux.Vars(r)
-	appIdOrName := vars["appIdOrName"]
-	idOrName := vars["idOrName"]
+	appIdentity := vars["appIdentity"]
+	identity := vars["identity"]
 
 	var opts schema.ContainerUpdateOpts
 	err := json.NewDecoder(r.Body).Decode(&opts)
@@ -133,13 +133,13 @@ func (c *ContainerController) Update(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	container, err := c.reg.ContainerFilteredByApp(appIdOrName, idOrName)
+	container, err := c.reg.ContainerFilteredByApp(appIdentity, identity)
 	if err != nil {
 		c.JSON(rw, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	container, err = c.reg.UpdateContainer(idOrName, opts)
+	container, err = c.reg.UpdateContainer(identity, opts)
 	if err != nil {
 		c.JSON(rw, http.StatusInternalServerError, err.Error())
 		return
