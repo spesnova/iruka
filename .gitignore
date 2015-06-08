@@ -26,3 +26,8 @@ gin-bin
 # OSX
 #
 .DS_Store
+
+#
+# binaries
+#
+artifacts

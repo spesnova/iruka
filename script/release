@@ -1,0 +1,40 @@
+#!/bin/bash
+#
+# Usage: script/release
+# Description: script to build artifacts
+#
+
+set -e
+
+# this script should be run in project root
+BASE_DIRECTORY=`pwd`
+if [ $(basename $BASE_DIRECTORY) != "iruka" ] ; then
+  echo "Please run this script in project root"
+  exit 1
+fi
+
+VERSION="v0.1.0"
+
+test -d ${BASE_DIRECTORY}/artifacts || mkdir ${BASE_DIRECTORY}/artifacts
+
+echo "==> Cross compiling iruka..."
+cd ${BASE_DIRECTORY}/iruka
+gox -osarch="linux/amd64 darwin/amd64" -output "../artifacts/${VERSION}/{{.OS}}/{{.Arch}}/{{.Dir}}"
+echo ""
+
+echo "==> Cross compiling irukad..."
+cd ${BASE_DIRECTORY}/irukad
+gox -osarch="linux/amd64 darwin/amd64" -output "../artifacts/${VERSION}/{{.OS}}/{{.Arch}}/{{.Dir}}"
+echo ""
+
+echo "==> Compressioning linux artifacts..."
+zip ${BASE_DIRECTORY}/artifacts/${VERSION}/linux/amd64/iruka-${VERSION}-linux-amd64.zip \
+    ${BASE_DIRECTORY}/artifacts/${VERSION}/linux/amd64/{iruka,irukad}
+echo "Created: artifacts/${VERSION}/linux/amd64/iruka-${VERSION}-linux-amd64.zip"
+echo ""
+
+echo "==> Compressioning darwin artifacts..."
+zip ${BASE_DIRECTORY}/artifacts/${VERSION}/darwin/amd64/iruka-${VERSION}-darwin-amd64.zip \
+    ${BASE_DIRECTORY}/artifacts/${VERSION}/darwin/amd64/{iruka,irukad}
+echo "Created: artifacts/${VERSION}/darwin/amd64/iruka-${VERSION}-darwin-amd64.zip"
+echo ""
