@@ -235,16 +235,22 @@ func (r *Registry) UpdateContainer(identity string, opts schema.ContainerUpdateO
 }
 
 // UpdateContainerState updates an options of a contaienr
-func (r *Registry) UpdateContainerState(identity, state string) (schema.Container, error) {
-	if state == "" {
+func (r *Registry) UpdateContainerState(identity string, opts schema.ContainerStateUpdateOpts) (schema.Container, error) {
+	if opts.State == "" {
 		return schema.Container{}, errors.New("state parameter is required, but missing")
+	}
+
+	if opts.Machine == "" {
+		return schema.Container{}, errors.New("machine parameter is required, but missing")
 	}
 
 	container, err := r.Container(identity)
 	if err != nil {
 		return schema.Container{}, err
 	}
-	container.State = state
+	container.State = opts.State
+	container.Machine = opts.Machine
+	container.PublishedPort = opts.PublishedPort
 	container.UpdatedAt = time.Now()
 
 	j, err := marshal(container)

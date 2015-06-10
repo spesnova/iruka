@@ -10,6 +10,7 @@ import (
 	"github.com/fsouza/go-dockerclient"
 
 	"github.com/spesnova/iruka/registry"
+	"github.com/spesnova/iruka/schema"
 )
 
 const (
@@ -22,11 +23,12 @@ type Agent interface {
 }
 
 type IrukaAgent struct {
-	docker *docker.Client
-	reg    *registry.Registry
+	docker  *docker.Client
+	reg     *registry.Registry
+	Machine string
 }
 
-func NewAgent(host string, reg *registry.Registry) Agent {
+func NewAgent(host, machine string, reg *registry.Registry) Agent {
 	if os.Getenv("IRUKA_DOCKER_HOST") != "" {
 		host = os.Getenv("IRUKA_DOCKER_HOST")
 	}
@@ -34,13 +36,15 @@ func NewAgent(host string, reg *registry.Registry) Agent {
 	if host == "" {
 		host = DefaultHost
 	}
+
 	client, err := docker.NewClient(host)
 	if err != nil {
 		fmt.Println(err.Error())
 	}
 	return &IrukaAgent{
-		client,
-		reg,
+		docker:  client,
+		reg:     reg,
+		Machine: machine,
 	}
 }
 
@@ -66,7 +70,13 @@ func (a *IrukaAgent) Pulse() {
 				continue
 			}
 
-			_, err := a.reg.UpdateContainerState(name, container.Status)
+			opts := schema.ContainerStateUpdateOpts{
+				State:         container.Status,
+				Machine:       a.Machine,
+				PublishedPort: container.Ports[0].PublicPort,
+			}
+
+			_, err := a.reg.UpdateContainerState(name, opts)
 			if err != nil {
 				fmt.Println(err.Error())
 			}

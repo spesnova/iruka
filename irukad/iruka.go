@@ -1,6 +1,9 @@
 package main
 
 import (
+	"log"
+	"os"
+
 	"github.com/codegangsta/negroni"
 	"github.com/gorilla/mux"
 	"github.com/unrolled/render"
@@ -21,7 +24,11 @@ func main() {
 	sch := scheduler.NewScheduler(url)
 
 	// Agent
-	age := agent.NewAgent(agent.DefaultHost, reg)
+	machine := os.Getenv("IRUKA_MACHINE")
+	if machine == "" {
+		log.Fatal("IRUKA_MACHINE is required, but missing")
+	}
+	age := agent.NewAgent(agent.DefaultHost, machine, reg)
 
 	// Render
 	ren := render.New()

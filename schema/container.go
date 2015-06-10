@@ -7,18 +7,20 @@ import (
 )
 
 type Container struct {
-	ID          uuid.UUID `json:"id"`
-	AppID       uuid.UUID `json:"app_id"`
-	Name        string    `json:"name"`
-	Image       string    `json:"image"`
-	Size        string    `json:"size"`
-	Command     string    `json:"command"`
-	Type        string    `json:"type"`
-	Ports       []int     `json:"ports"`
-	DesireState string    `json:"desire_state"`
-	State       string    `json:"state"`
-	CreatedAt   time.Time `json:"created_at"`
-	UpdatedAt   time.Time `json:"updated_at"`
+	ID            uuid.UUID `json:"id"`
+	AppID         uuid.UUID `json:"app_id"`
+	Name          string    `json:"name"`
+	Image         string    `json:"image"`
+	Size          string    `json:"size"`
+	Command       string    `json:"command"`
+	Type          string    `json:"type"`
+	Ports         []int     `json:"ports"`
+	DesireState   string    `json:"desire_state"`
+	State         string    `json:"state"`
+	Machine       string    `json:"machine"`
+	PublishedPort int64     `json:"published_port"`
+	CreatedAt     time.Time `json:"created_at"`
+	UpdatedAt     time.Time `json:"updated_at"`
 }
 
 type ContainerCreateOpts struct {
@@ -35,4 +37,10 @@ type ContainerUpdateOpts struct {
 	Command string `json:"command"`
 	Type    string `json:"type"`
 	Ports   []int  `json:"ports"`
+}
+
+type ContainerStateUpdateOpts struct {
+	State         string `json:"state"`
+	Machine       string `json:"machine"`
+	PublishedPort int64  `json:"published_port"`
 }
