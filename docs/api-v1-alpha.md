@@ -230,6 +230,8 @@ Container encapsulate running processes of an app on iruka.
 | **type** | *string* | type of process (either "web", "worker", "timer", or "run") | `"web"` |
 | **desired_state** | *string* | desired state of process (either exited or up) | `"up"` |
 | **state** | *string* | current state of process (either exited or up) | `"up"` |
+| **machine** | *string* | where this container is running | `"172.17.8.102"` |
+| **published_port** | *integer* | published port | `49153` |
 | **created_at** | *date-time* | when container was created | `"2012-01-01T12:00:00Z"` |
 | **updated_at** | *date-time* | when container was updated | `"2012-01-01T12:00:00Z"` |
 
@@ -292,6 +294,8 @@ HTTP/1.1 201 Created
   "type": "web",
   "desired_state": "up",
   "state": "up",
+  "machine": "172.17.8.102",
+  "published_port": 49153,
   "created_at": "2012-01-01T12:00:00Z",
   "updated_at": "2012-01-01T12:00:00Z"
 }
@@ -335,6 +339,8 @@ HTTP/1.1 200 OK
   "type": "web",
   "desired_state": "up",
   "state": "up",
+  "machine": "172.17.8.102",
+  "published_port": 49153,
   "created_at": "2012-01-01T12:00:00Z",
   "updated_at": "2012-01-01T12:00:00Z"
 }
@@ -377,6 +383,8 @@ HTTP/1.1 200 OK
   "type": "web",
   "desired_state": "up",
   "state": "up",
+  "machine": "172.17.8.102",
+  "published_port": 49153,
   "created_at": "2012-01-01T12:00:00Z",
   "updated_at": "2012-01-01T12:00:00Z"
 }
@@ -420,6 +428,8 @@ HTTP/1.1 200 OK
     "type": "web",
     "desired_state": "up",
     "state": "up",
+    "machine": "172.17.8.102",
+    "published_port": 49153,
     "created_at": "2012-01-01T12:00:00Z",
     "updated_at": "2012-01-01T12:00:00Z"
   }
@@ -485,6 +495,8 @@ HTTP/1.1 200 OK
   "type": "web",
   "desired_state": "up",
   "state": "up",
+  "machine": "172.17.8.102",
+  "published_port": 49153,
   "created_at": "2012-01-01T12:00:00Z",
   "updated_at": "2012-01-01T12:00:00Z"
 }

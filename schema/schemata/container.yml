@@ -73,6 +73,18 @@ definitions:
     readOnly: true
     type:
     - string
+  machine:
+    description: where this container is running
+    example: 172.17.8.102
+    readOnly: true
+    type:
+    - string
+  published_port:
+    description: published port
+    example: 49153
+    readOnly: true
+    type:
+    - integer
   created_at:
     description: when container was created
     example: '2012-01-01T12:00:00Z'
@@ -172,6 +184,10 @@ properties:
     "$ref": "/schemata/container#/definitions/desired_state"
   state:
     "$ref": "/schemata/container#/definitions/state"
+  machine:
+    "$ref": "/schemata/container#/definitions/machine"
+  published_port:
+    "$ref": "/schemata/container#/definitions/published_port"
   created_at:
     "$ref": "/schemata/container#/definitions/created_at"
   updated_at:

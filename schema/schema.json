@@ -246,6 +246,22 @@
             "string"
           ]
         },
+        "machine": {
+          "description": "where this container is running",
+          "example": "172.17.8.102",
+          "readOnly": true,
+          "type": [
+            "string"
+          ]
+        },
+        "published_port": {
+          "description": "published port",
+          "example": 49153,
+          "readOnly": true,
+          "type": [
+            "integer"
+          ]
+        },
         "created_at": {
           "description": "when container was created",
           "example": "2012-01-01T12:00:00Z",
@@ -374,6 +390,12 @@
         },
         "state": {
           "$ref": "#/definitions/container/definitions/state"
+        },
+        "machine": {
+          "$ref": "#/definitions/container/definitions/machine"
+        },
+        "published_port": {
+          "$ref": "#/definitions/container/definitions/published_port"
         },
         "created_at": {
           "$ref": "#/definitions/container/definitions/created_at"
