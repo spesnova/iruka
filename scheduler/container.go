@@ -1,6 +1,7 @@
 package scheduler
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
 
@@ -104,7 +105,7 @@ func (s *Scheduler) containerToUnitOptions(c schema.Container) ([]*fleet.UnitOpt
 				"--name",
 				c.Name,
 				configVarsOptions(c),
-				portOptions(c),
+				portOption(c),
 				sizeOption(c),
 				c.Image,
 				c.Command,
@@ -127,12 +128,9 @@ func configVarsOptions(c schema.Container) string {
 	return ""
 }
 
-func portOptions(c schema.Container) string {
-	var opts []string
-	for _, port := range c.Ports {
-		opts = append(opts, strings.Join([]string{"-p", strconv.Itoa(port)}, " "))
-	}
-	return strings.Join(opts, " ")
+func portOption(c schema.Container) string {
+	//return strings.Join([]string{"-p", strconv.FormatInt(c.Port, 10)}, " ")
+	return fmt.Sprintf("-p %s", strconv.FormatInt(c.Port, 10))
 }
 
 func sizeOption(c schema.Container) string {

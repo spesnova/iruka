@@ -54,7 +54,7 @@ func (r *Registry) CreateContainer(appIdentity string, opts schema.ContainerCrea
 		Size:        opts.Size,
 		Command:     opts.Command,
 		Type:        opts.Type,
-		Ports:       opts.Ports,
+		Port:        opts.Port,
 		DesireState: "up",
 		State:       "",
 		CreatedAt:   time.Now(),

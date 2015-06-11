@@ -211,15 +211,12 @@
             "string"
           ]
         },
-        "ports": {
-          "description": "expose ports",
-          "example": [
-            80,
-            8080
-          ],
+        "port": {
+          "description": "expose port",
+          "example": 80,
           "readOnly": false,
           "type": [
-            "array"
+            "integer"
           ]
         },
         "type": {
@@ -299,8 +296,8 @@
               "type": {
                 "$ref": "#/definitions/container/definitions/type"
               },
-              "ports": {
-                "$ref": "#/definitions/container/definitions/ports"
+              "port": {
+                "$ref": "#/definitions/container/definitions/port"
               }
             },
             "type": [
@@ -349,8 +346,8 @@
               "type": {
                 "$ref": "#/definitions/container/definitions/type"
               },
-              "ports": {
-                "$ref": "#/definitions/container/definitions/ports"
+              "port": {
+                "$ref": "#/definitions/container/definitions/port"
               }
             },
             "type": [
@@ -379,8 +376,8 @@
         "command": {
           "$ref": "#/definitions/container/definitions/command"
         },
-        "ports": {
-          "$ref": "#/definitions/container/definitions/ports"
+        "port": {
+          "$ref": "#/definitions/container/definitions/port"
         },
         "type": {
           "$ref": "#/definitions/container/definitions/type"

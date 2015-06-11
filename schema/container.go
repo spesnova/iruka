@@ -14,7 +14,7 @@ type Container struct {
 	Size          string    `json:"size"`
 	Command       string    `json:"command"`
 	Type          string    `json:"type"`
-	Ports         []int     `json:"ports"`
+	Port          int64     `json:"port"`
 	DesireState   string    `json:"desire_state"`
 	State         string    `json:"state"`
 	Machine       string    `json:"machine"`
@@ -28,7 +28,7 @@ type ContainerCreateOpts struct {
 	Size    string `json:"size"`
 	Command string `json:"command"`
 	Type    string `json:"type"`
-	Ports   []int  `json:"ports"`
+	Port    int64  `json:"port"`
 }
 
 type ContainerUpdateOpts struct {
@@ -36,7 +36,7 @@ type ContainerUpdateOpts struct {
 	Size    string `json:"size"`
 	Command string `json:"command"`
 	Type    string `json:"type"`
-	Ports   []int  `json:"ports"`
+	Port    int64  `json:"port"`
 }
 
 type ContainerStateUpdateOpts struct {
