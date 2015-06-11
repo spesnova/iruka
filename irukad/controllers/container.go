@@ -51,7 +51,9 @@ func (c *ContainerController) Create(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = c.sch.CreateContainer(container)
+	var configVars map[string]string
+
+	err = c.sch.CreateContainer(container, configVars)
 	if err != nil {
 		c.JSON(rw, http.StatusInternalServerError, err.Error())
 		return
