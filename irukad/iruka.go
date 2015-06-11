@@ -49,6 +49,7 @@ func main() {
 
 	// Config Vars Resource
 	v1subrou.Path("/config_vars").Methods("POST").HandlerFunc(configVarsController.Create)
+	v1subrou.Path("/config_vars").Methods("GET").HandlerFunc(configVarsController.List)
 
 	// Middleware stack
 	n := negroni.New(
