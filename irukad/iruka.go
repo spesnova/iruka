@@ -1,10 +1,14 @@
 package main
 
 import (
+	"log"
+	"os"
+
 	"github.com/codegangsta/negroni"
 	"github.com/gorilla/mux"
 	"github.com/unrolled/render"
 
+	"github.com/spesnova/iruka/agent"
 	"github.com/spesnova/iruka/irukad/controllers"
 	"github.com/spesnova/iruka/registry"
 	"github.com/spesnova/iruka/scheduler"
@@ -18,6 +22,13 @@ func main() {
 	// Scheduler
 	url := scheduler.DefaultAPIURL
 	sch := scheduler.NewScheduler(url)
+
+	// Agent
+	machine := os.Getenv("IRUKA_MACHINE")
+	if machine == "" {
+		log.Fatal("IRUKA_MACHINE is required, but missing")
+	}
+	age := agent.NewAgent(agent.DefaultHost, machine, reg)
 
 	// Render
 	ren := render.New()
@@ -54,7 +65,9 @@ func main() {
 
 	n.UseHandler(rou)
 
-	go containerController.UpdateStates()
+	go age.Pulse()
+	// Disable retrieving unit state from fleet for now
+	//go containerController.UpdateStates()
 
 	n.Run(":8080")
 }
