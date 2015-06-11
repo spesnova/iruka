@@ -48,7 +48,7 @@ func NewAgent(host, machine string, reg *registry.Registry) Agent {
 	}
 }
 
-// Pulse retrieves container state from local docker API and registers
+// Pulse retrieves container state from local docker API and registers it to etcd
 func (a *IrukaAgent) Pulse() {
 	for {
 		containers, err := a.docker.ListContainers(docker.ListContainersOptions{All: true})
@@ -61,12 +61,12 @@ func (a *IrukaAgent) Pulse() {
 			// Regist only containers that managed by iruka
 			s := strings.Split(name, ".")
 			if uuid.Parse((s[len(s)-1])) == nil {
-				fmt.Println(name)
+				fmt.Println("Skipped to register:", name)
 				continue
 			}
 
 			if container.Status == "" {
-				fmt.Println(name)
+				fmt.Println("Skipped to register(status is unknown):", name)
 				continue
 			}
 
