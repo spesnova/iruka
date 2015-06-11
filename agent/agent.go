@@ -80,7 +80,8 @@ func (a *IrukaAgent) Pulse() {
 			if err != nil {
 				fmt.Println(err.Error())
 			}
-			time.Sleep(pulseInterval * time.Second)
 		}
+
+		time.Sleep(pulseInterval * time.Second)
 	}
 }
