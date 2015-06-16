@@ -39,6 +39,12 @@ func runSet(c *cli.Context) {
 	keyValues := strings.Split(keyValuesString, ",")
 	for i := range keyValues {
 		keyValue := strings.Split(keyValues[i], "=")
+
+		if len(keyValue) != 2 {
+			cli.ShowCommandHelp(c, "set")
+			os.Exit(1)
+		}
+
 		configVars[keyValue[0]] = keyValue[1]
 	}
 
