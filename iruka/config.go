@@ -17,6 +17,7 @@ var cmdConfig = cli.Command{
 	Subcommands: []cli.Command{
 		cmdConfigShow,
 		cmdConfigSet,
+		cmdConfigUnset,
 	},
 }
 
@@ -52,6 +53,21 @@ EXAMPLE:
 	Action: runConfigSet,
 }
 
+var cmdConfigUnset = cli.Command{
+	Name:  "unset",
+	Usage: "Remove config vars from app",
+	Description: `
+   $ iruka config unset <APP> <KEY1>,<KEY2>
+
+EXAMPLE:
+
+   $ iruka config unset example FOO,BAZ
+   HELLO:     world
+   SOME_FLAG: 1
+`,
+	Action: runConfigUnset,
+}
+
 func runConfigShow(c *cli.Context) {
 	if len(c.Args()) != 1 {
 		cli.ShowCommandHelp(c, "show")
@@ -85,6 +101,34 @@ func runConfigSet(c *cli.Context) {
 	for i := range keyValues {
 		keyValue := strings.Split(keyValues[i], "=")
 		configVars[keyValue[0]] = keyValue[1]
+	}
+
+	res, err := client.ConfigVarsUpdate(appIdentity, configVars)
+	if err != nil {
+		fmt.Println("error")
+		fmt.Println(err)
+		os.Exit(1)
+	}
+
+	// TODO(dtan4): restart container here
+
+	out = showConfigVars(out, res)
+	out.Flush()
+}
+
+func runConfigUnset(c *cli.Context) {
+	if len(c.Args()) != 2 {
+		cli.ShowCommandHelp(c, "unset")
+		os.Exit(1)
+	}
+
+	appIdentity := c.Args().First()
+
+	configVars := make(map[string]string)
+	keysString := c.Args()[1]
+	keys := strings.Split(keysString, ",")
+	for i := range keys {
+		configVars[keys[i]] = ""
 	}
 
 	res, err := client.ConfigVarsUpdate(appIdentity, configVars)
