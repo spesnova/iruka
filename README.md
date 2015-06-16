@@ -3,6 +3,13 @@ A lightweight container platform.
 
 <img src="iruka.png" height=250px>
 
+## HTTP API
+
+* [Errors](docs/api-v1-alpha.md#errors)
+* [App](docs/api-v1-alpha.md#app)
+* [Container](docs/api-v1-alpha.md#container)
+* [Config Vars](docs/api-v1-alpha.md#config-vars)
+
 ## Configuration
 ### Server
 
