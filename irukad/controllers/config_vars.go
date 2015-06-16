@@ -53,7 +53,7 @@ func (c *ConfigVarsController) List(rw http.ResponseWriter, r *http.Request) {
 	}
 
 	if len(configVars) == 0 {
-		c.JSON(rw, http.StatusOK, []schema.ConfigVars{})
+		c.JSON(rw, http.StatusOK, schema.ConfigVars{})
 		return
 	}
 
