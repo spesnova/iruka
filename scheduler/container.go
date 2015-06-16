@@ -11,8 +11,8 @@ import (
 )
 
 // CreateContaier creates and starts a new container as systemd unit via fleet
-func (s *Scheduler) CreateContainer(c schema.Container) error {
-	opts, err := s.containerToUnitOptions(c)
+func (s *Scheduler) CreateContainer(c schema.Container, cv schema.ConfigVars) error {
+	opts, err := s.containerToUnitOptions(c, cv)
 	if err != nil {
 		return err
 	}
@@ -42,7 +42,7 @@ func (s *Scheduler) Containers() ([]schema.Container, error) {
 	return containers, nil
 }
 
-func (s *Scheduler) containerToUnitOptions(c schema.Container) ([]*fleet.UnitOption, error) {
+func (s *Scheduler) containerToUnitOptions(c schema.Container, cv schema.ConfigVars) ([]*fleet.UnitOption, error) {
 	return []*fleet.UnitOption{
 		// Unit section example:
 		//
@@ -104,7 +104,7 @@ func (s *Scheduler) containerToUnitOptions(c schema.Container) ([]*fleet.UnitOpt
 				"run",
 				"--name",
 				c.Name,
-				configVarsOptions(c),
+				configVarsOptions(cv),
 				portOption(c),
 				sizeOption(c),
 				c.Image,
@@ -124,8 +124,14 @@ func (s *Scheduler) containerToUnitOptions(c schema.Container) ([]*fleet.UnitOpt
 	}, nil
 }
 
-func configVarsOptions(c schema.Container) string {
-	return ""
+func configVarsOptions(cv schema.ConfigVars) string {
+	var opts []string
+
+	for k, v := range cv {
+		// -e FOO=foo
+		opts = append(opts, strings.Join([]string{"-e ", k, "=", v}, ""))
+	}
+	return strings.Join(opts, " ")
 }
 
 func portOption(c schema.Container) string {

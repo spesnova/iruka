@@ -36,6 +36,7 @@ func main() {
 	// Controllers
 	appController := controllers.NewAppController(reg, ren)
 	containerController := controllers.NewContainerController(reg, ren, sch)
+	configVarsController := controllers.NewConfigVarsController(reg, ren)
 
 	// Router
 	rou := mux.NewRouter()
@@ -56,6 +57,10 @@ func main() {
 	v1subrou.Path("/containers/{identity}").Methods("GET").HandlerFunc(containerController.Info)
 	v1subrou.Path("/containers").Methods("GET").HandlerFunc(containerController.List)
 	v1subrou.Path("/containers/{identity}").Methods("PATCH").HandlerFunc(containerController.Update)
+
+	// Config Vars Resource
+	v1subrou.Path("/config_vars").Methods("GET").HandlerFunc(configVarsController.Info)
+	v1subrou.Path("/config_vars").Methods("PATCH").HandlerFunc(configVarsController.Update)
 
 	// Middleware stack
 	n := negroni.New(

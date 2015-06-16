@@ -141,6 +141,71 @@
         }
       }
     },
+    "config-vars": {
+      "$schema": "http://json-schema.org/draft-04/hyper-schema",
+      "title": "Config Vars",
+      "description": "Config Vars allow you to manage the configuration information provided to an app on iruka.",
+      "stability": "prototype",
+      "strictProperties": true,
+      "type": [
+        "object"
+      ],
+      "definitions": {
+        "foo": {
+          "description": "an example key-value",
+          "example": "bar",
+          "readOnly": false,
+          "type": [
+            "string"
+          ]
+        },
+        "baz": {
+          "description": "an example key-value",
+          "example": "qux",
+          "readOnly": false,
+          "type": [
+            "string"
+          ]
+        }
+      },
+      "links": [
+        {
+          "description": "Get config-vars for app.",
+          "href": "/apps/{(%23%2Fdefinitions%2Fapp%2Fdefinitions%2Fidentity)}/config-vars",
+          "method": "GET",
+          "rel": "self",
+          "title": "Info"
+        },
+        {
+          "description": "Update config-vars for app. You can update existing config-vars by setting them again, and remove by setting it to \"\".",
+          "href": "/apps/{(%23%2Fdefinitions%2Fapp%2Fdefinitions%2Fidentity)}/config-vars",
+          "method": "PATCH",
+          "rel": "update",
+          "schema": {
+            "properties": {
+              "FOO": {
+                "$ref": "#/definitions/config-vars/definitions/foo"
+              },
+              "BAZ": {
+                "$ref": "#/definitions/config-vars/definitions/baz"
+              }
+            },
+            "type": [
+              "object"
+            ]
+          },
+          "title": "Update"
+        }
+      ],
+      "properties": {
+        "FOO": {
+          "$ref": "#/definitions/config-vars/definitions/foo"
+        },
+        "BAZ": {
+          "$ref": "#/definitions/config-vars/definitions/baz"
+        }
+      }
+    },
     "container": {
       "$schema": "http://json-schema.org/draft-04/hyper-schema",
       "title": "Container",
@@ -459,6 +524,9 @@
   "properties": {
     "app": {
       "$ref": "#/definitions/app"
+    },
+    "config-vars": {
+      "$ref": "#/definitions/config-vars"
     },
     "container": {
       "$ref": "#/definitions/container"
