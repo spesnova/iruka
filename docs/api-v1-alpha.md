@@ -212,6 +212,89 @@ HTTP/1.1 200 OK
 ```
 
 
+## Config Vars
+
+Config Vars allow you to manage the configuration information provided to an app on iruka.
+
+### Attributes
+
+| Name | Type | Description | Example |
+| ------- | ------- | ------- | ------- |
+| **FOO** | *string* | an example key-value | `"bar"` |
+| **BAZ** | *string* | an example key-value | `"qux"` |
+
+### Config Vars Info
+
+Get config-vars for app.
+
+```
+GET /apps/{app_id_or_name}/config-vars
+```
+
+
+#### Curl Example
+
+```bash
+$ curl -n https://<your-iruka-server>.com/api/v1-alpha/apps/$APP_ID_OR_NAME/config-vars
+```
+
+
+#### Response Example
+
+```
+HTTP/1.1 200 OK
+```
+
+```json
+{
+  "FOO": "bar",
+  "BAZ": "qux"
+}
+```
+
+### Config Vars Update
+
+Update config-vars for app. You can update existing config-vars by setting them again, and remove by setting it to "".
+
+```
+PATCH /apps/{app_id_or_name}/config-vars
+```
+
+#### Optional Parameters
+
+| Name | Type | Description | Example |
+| ------- | ------- | ------- | ------- |
+| **FOO** | *string* | an example key-value | `"bar"` |
+| **BAZ** | *string* | an example key-value | `"qux"` |
+
+
+#### Curl Example
+
+```bash
+$ curl -n -X PATCH https://<your-iruka-server>.com/api/v1-alpha/apps/$APP_ID_OR_NAME/config-vars \
+  -H "Content-Type: application/json" \
+ \
+  -d '{
+  "FOO": "bar",
+  "BAZ": "qux"
+}'
+```
+
+
+#### Response Example
+
+```
+HTTP/1.1 200 OK
+```
+
+```json
+{
+  "FOO": "bar",
+  "BAZ": "qux"
+}
+```
+
+
 ## Container
 
 Container encapsulate running processes of an app on iruka.
