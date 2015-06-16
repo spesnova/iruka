@@ -1,8 +1,0 @@
-app: hogehoge
-image: coreos/example:2.0.0
-web:
-  command: /bin/sh -c nginx
-  ports:
-    - 80
-    - 8080
-  size: 2X
