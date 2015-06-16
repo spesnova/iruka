@@ -7,6 +7,7 @@ import (
 var Commands = []cli.Command{
 	cmdApps,
 	cmdCreate,
+	cmdConfig,
 	cmdDestroy,
 	cmdPs,
 	cmdDeploy,
