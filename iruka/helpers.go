@@ -6,10 +6,14 @@ import (
 	"io/ioutil"
 	"os"
 	"strconv"
+	"strings"
+	"text/tabwriter"
 	"time"
 
 	"github.com/codegangsta/cli"
 	"gopkg.in/yaml.v2"
+
+	"github.com/spesnova/iruka/schema"
 )
 
 func getAppIdentity(c *cli.Context) string {
@@ -69,4 +73,14 @@ func parseYamlFile(filename string, v interface{}) error {
 	}
 
 	return nil
+}
+
+func showConfigVars(out *tabwriter.Writer, c schema.ConfigVars) *tabwriter.Writer {
+	for k, v := range c {
+		var f []string
+		f = append(f, k+":")
+		f = append(f, v)
+		fmt.Fprintln(out, strings.Join(f, "\t"))
+	}
+	return out
 }
