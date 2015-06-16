@@ -1,5 +1,5 @@
 # iruka
-An lightweight container platform.
+A lightweight container platform.
 
 ## Configuration
 ### Server
