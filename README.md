@@ -1,6 +1,8 @@
 # iruka
 A lightweight container platform.
 
+<img src="iruka.png" height=250px>
+
 ## Configuration
 ### Server
 
