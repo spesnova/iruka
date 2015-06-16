@@ -128,7 +128,8 @@ func configVarsOptions(cv schema.ConfigVars) string {
 	var opts []string
 
 	for k, v := range cv {
-		opts = append(opts, strings.Join([]string{"-e", k, "=", v}, ""))
+		// -e FOO=foo
+		opts = append(opts, strings.Join([]string{"-e ", k, "=", v}, ""))
 	}
 	return strings.Join(opts, " ")
 }
