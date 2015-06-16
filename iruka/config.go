@@ -76,7 +76,7 @@ func runConfigShow(c *cli.Context) {
 
 	appIdentity := c.Args().First()
 
-	res, err := client.ConfigVarsList(appIdentity)
+	res, err := client.ConfigVarsInfo(appIdentity)
 	if err != nil {
 		fmt.Println("error")
 		fmt.Println(err)

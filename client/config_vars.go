@@ -4,7 +4,7 @@ import (
 	"github.com/spesnova/iruka/schema"
 )
 
-func (c *Client) ConfigVarsList(appIdentity string) (schema.ConfigVars, error) {
+func (c *Client) ConfigVarsInfo(appIdentity string) (schema.ConfigVars, error) {
 	var configVarsRes schema.ConfigVars
 	return configVarsRes, c.Get(&configVarsRes, "/apps/"+appIdentity+"/config_vars")
 }

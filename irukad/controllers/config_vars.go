@@ -42,7 +42,7 @@ func (c *ConfigVarsController) Update(rw http.ResponseWriter, r *http.Request) {
 	c.JSON(rw, http.StatusCreated, configVars)
 }
 
-func (c *ConfigVarsController) List(rw http.ResponseWriter, r *http.Request) {
+func (c *ConfigVarsController) Info(rw http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	appIdentity := vars["appIdentity"]
 
