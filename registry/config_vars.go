@@ -49,7 +49,7 @@ func (r *Registry) UpdateConfigVars(appIdentity string, opts schema.ConfigVars) 
 		}
 	}
 
-	j, err := marshal(opts)
+	j, err := marshal(configVars)
 	if err != nil {
 		fmt.Println(err.Error())
 		return schema.ConfigVars{}, err
