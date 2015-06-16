@@ -25,7 +25,7 @@ links:
   method: GET
   rel: self
   title: Info
-- description: Update config-vars for app. You can update existing config-vars by setting them again, and remove by setting it to `\"\"`.
+- description: Update config-vars for app. You can update existing config-vars by setting them again, and remove by setting it to "".
   href: "/apps/{(%2Fschemata%2Fapp%23%2Fdefinitions%2Fidentity)}/config-vars"
   method: PATCH
   rel: update
@@ -46,6 +46,4 @@ properties:
     "$ref": "/schemata/config-vars#/definitions/foo"
   BAZ:
     "$ref": "/schemata/config-vars#/definitions/baz"
-  type:
-  - object
 id: schemata/config-vars
