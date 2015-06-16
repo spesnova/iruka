@@ -5,8 +5,10 @@
 
 ```bash
 # development
+$ export IRUKA_MACHINE=172.17.8.101
 $ export IRUKA_ETCD_MACHINES=http://172.17.8.101:4001
 $ export IRUKA_FLEET_API_URL=http://172.17.8.101:4002
+$ export IRUKA_DOCKER_HOST=http://172.17.8.101:2375
 $ gin --appPort 8080
 ```
 
@@ -14,8 +16,11 @@ $ gin --appPort 8080
 # deploying as docker container
 $ docker run \
     -d \
-    -e IRUKA_ETCD_MACHINES=http://localhost:4001 \
-    -e IRUKA_FLEET_API_URL=http://localhost:4002 \
+    --name irukad \
+    -e IRUKA_MACHINE=172.17.8.101 \
+    -e IRUKA_ETCD_MACHINES=http://172.17.8.101:4001 \
+    -e IRUKA_FLEET_API_URL=http://172.17.8.101:4002 \
+    -e IRUKA_DOCKER_HOST=http://172.17.8.101:2375 \
     -p 8080:8080 \
     quay.io/spesnova/iruka:latest
 ```

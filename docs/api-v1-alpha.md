@@ -226,10 +226,12 @@ Container encapsulate running processes of an app on iruka.
 | **image** | *string* | resource URI of the Docker image (including tag) of the container | `"quay.io/spesnova/example:latest"` |
 | **size** | *string* | container size (default “1X”) | `"2X"` |
 | **command** | *string* | command used to start this process | `"bundle exec rails server"` |
-| **ports** | *array* | expose ports | `[80,8080]` |
+| **port** | *integer* | expose port | `80` |
 | **type** | *string* | type of process (either "web", "worker", "timer", or "run") | `"web"` |
 | **desired_state** | *string* | desired state of process (either exited or up) | `"up"` |
 | **state** | *string* | current state of process (either exited or up) | `"up"` |
+| **machine** | *string* | where this container is running | `"172.17.8.102"` |
+| **published_port** | *integer* | published port | `49153` |
 | **created_at** | *date-time* | when container was created | `"2012-01-01T12:00:00Z"` |
 | **updated_at** | *date-time* | when container was updated | `"2012-01-01T12:00:00Z"` |
 
@@ -249,7 +251,7 @@ POST /apps/{app_id_or_name}/containers
 | **size** | *string* | container size (default “1X”) | `"2X"` |
 | **command** | *string* | command used to start this process | `"bundle exec rails server"` |
 | **type** | *string* | type of process (either "web", "worker", "timer", or "run") | `"web"` |
-| **ports** | *array* | expose ports | `[80,8080]` |
+| **port** | *integer* | expose port | `80` |
 
 
 #### Curl Example
@@ -263,10 +265,7 @@ $ curl -n -X POST https://<your-iruka-server>.com/api/v1-alpha/apps/$APP_ID_OR_N
   "size": "2X",
   "command": "bundle exec rails server",
   "type": "web",
-  "ports": [
-    80,
-    8080
-  ]
+  "port": 80
 }'
 ```
 
@@ -285,13 +284,12 @@ HTTP/1.1 201 Created
   "image": "quay.io/spesnova/example:latest",
   "size": "2X",
   "command": "bundle exec rails server",
-  "ports": [
-    80,
-    8080
-  ],
+  "port": 80,
   "type": "web",
   "desired_state": "up",
   "state": "up",
+  "machine": "172.17.8.102",
+  "published_port": 49153,
   "created_at": "2012-01-01T12:00:00Z",
   "updated_at": "2012-01-01T12:00:00Z"
 }
@@ -328,13 +326,12 @@ HTTP/1.1 200 OK
   "image": "quay.io/spesnova/example:latest",
   "size": "2X",
   "command": "bundle exec rails server",
-  "ports": [
-    80,
-    8080
-  ],
+  "port": 80,
   "type": "web",
   "desired_state": "up",
   "state": "up",
+  "machine": "172.17.8.102",
+  "published_port": 49153,
   "created_at": "2012-01-01T12:00:00Z",
   "updated_at": "2012-01-01T12:00:00Z"
 }
@@ -370,13 +367,12 @@ HTTP/1.1 200 OK
   "image": "quay.io/spesnova/example:latest",
   "size": "2X",
   "command": "bundle exec rails server",
-  "ports": [
-    80,
-    8080
-  ],
+  "port": 80,
   "type": "web",
   "desired_state": "up",
   "state": "up",
+  "machine": "172.17.8.102",
+  "published_port": 49153,
   "created_at": "2012-01-01T12:00:00Z",
   "updated_at": "2012-01-01T12:00:00Z"
 }
@@ -413,13 +409,12 @@ HTTP/1.1 200 OK
     "image": "quay.io/spesnova/example:latest",
     "size": "2X",
     "command": "bundle exec rails server",
-    "ports": [
-      80,
-      8080
-    ],
+    "port": 80,
     "type": "web",
     "desired_state": "up",
     "state": "up",
+    "machine": "172.17.8.102",
+    "published_port": 49153,
     "created_at": "2012-01-01T12:00:00Z",
     "updated_at": "2012-01-01T12:00:00Z"
   }
@@ -442,7 +437,7 @@ PATCH /apps/{app_id_or_name}/containers/{container_id_or_name}
 | **size** | *string* | container size (default “1X”) | `"2X"` |
 | **command** | *string* | command used to start this process | `"bundle exec rails server"` |
 | **type** | *string* | type of process (either "web", "worker", "timer", or "run") | `"web"` |
-| **ports** | *array* | expose ports | `[80,8080]` |
+| **port** | *integer* | expose port | `80` |
 
 
 #### Curl Example
@@ -456,10 +451,7 @@ $ curl -n -X PATCH https://<your-iruka-server>.com/api/v1-alpha/apps/$APP_ID_OR_
   "size": "2X",
   "command": "bundle exec rails server",
   "type": "web",
-  "ports": [
-    80,
-    8080
-  ]
+  "port": 80
 }'
 ```
 
@@ -478,13 +470,12 @@ HTTP/1.1 200 OK
   "image": "quay.io/spesnova/example:latest",
   "size": "2X",
   "command": "bundle exec rails server",
-  "ports": [
-    80,
-    8080
-  ],
+  "port": 80,
   "type": "web",
   "desired_state": "up",
   "state": "up",
+  "machine": "172.17.8.102",
+  "published_port": 49153,
   "created_at": "2012-01-01T12:00:00Z",
   "updated_at": "2012-01-01T12:00:00Z"
 }

@@ -11,7 +11,7 @@ import (
 
 type Web struct {
 	Command string
-	Ports   []int
+	Port    int64
 	Size    string
 }
 
@@ -58,7 +58,7 @@ func runDeploy(c *cli.Context) {
 		Size:    p.Web.Size,
 		Command: p.Web.Command,
 		Type:    "web",
-		Ports:   p.Web.Ports,
+		Port:    p.Web.Port,
 	}
 
 	if len(containers) == 0 {

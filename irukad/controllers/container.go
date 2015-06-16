@@ -2,9 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
-	"time"
 
 	"github.com/gorilla/mux"
 	"github.com/unrolled/render"
@@ -150,19 +148,20 @@ func (c *ContainerController) Update(rw http.ResponseWriter, r *http.Request) {
 	c.JSON(rw, http.StatusAccepted, container)
 }
 
-func (c *ContainerController) UpdateStates() {
-	for {
-		containers, err := c.sch.Containers()
-		if err != nil {
-			fmt.Println(err.Error())
-		}
-
-		for _, container := range containers {
-			_, err := c.reg.UpdateContainerState(container.Name, container.State)
-			if err != nil {
-				fmt.Println(err.Error())
-			}
-		}
-		time.Sleep(interval * time.Second)
-	}
-}
+// Disable retrieving unit state from fleet for now
+//func (c *ContainerController) UpdateStates() {
+//	for {
+//		containers, err := c.sch.Containers()
+//		if err != nil {
+//			fmt.Println(err.Error())
+//		}
+//
+//		for _, container := range containers {
+//			_, err := c.reg.UpdateContainerState(container.Name, container.State)
+//			if err != nil {
+//				fmt.Println(err.Error())
+//			}
+//		}
+//		time.Sleep(interval * time.Second)
+//	}
+//}

@@ -10,4 +10,5 @@ var Commands = []cli.Command{
 	cmdDestroy,
 	cmdPs,
 	cmdDeploy,
+	cmdOpen,
 }
