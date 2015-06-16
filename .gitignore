@@ -31,3 +31,9 @@ gin-bin
 # binaries
 #
 artifacts
+
+#
+# iruka artifacts
+#
+iruka
+iruka.yml
