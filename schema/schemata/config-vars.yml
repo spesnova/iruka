@@ -1,7 +1,7 @@
 ---
 "$schema": http://json-schema.org/draft-04/hyper-schema
 title: Config Vars
-description: Config Vars allow you to manager the configuration information provided to an app on iruka.
+description: Config Vars allow you to manage the configuration information provided to an app on iruka.
 stability: prototype
 strictProperties: true
 type:
