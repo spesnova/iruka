@@ -59,8 +59,8 @@ func main() {
 	v1subrou.Path("/containers/{identity}").Methods("PATCH").HandlerFunc(containerController.Update)
 
 	// Config Vars Resource
-	v1subrou.Path("/config_vars").Methods("GET").HandlerFunc(configVarsController.Info)
-	v1subrou.Path("/config_vars").Methods("PATCH").HandlerFunc(configVarsController.Update)
+	v1subrou.Path("/config-vars").Methods("GET").HandlerFunc(configVarsController.Info)
+	v1subrou.Path("/config-vars").Methods("PATCH").HandlerFunc(configVarsController.Update)
 
 	// Middleware stack
 	n := negroni.New(
