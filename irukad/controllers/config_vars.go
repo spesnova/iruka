@@ -20,7 +20,7 @@ func NewConfigVarsController(reg *registry.Registry, ren *render.Render) ConfigV
 	return ConfigVarsController{reg, ren}
 }
 
-func (c *ConfigVarsController) Create(rw http.ResponseWriter, r *http.Request) {
+func (c *ConfigVarsController) Update(rw http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 
 	vars := mux.Vars(r)
@@ -33,13 +33,13 @@ func (c *ConfigVarsController) Create(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	app, err := c.CreateConfigVars(appIdentity, opts)
+	configVars, err := c.UpdateConfigVars(appIdentity, opts)
 	if err != nil {
 		c.JSON(rw, http.StatusInternalServerError, "error")
 		return
 	}
 
-	c.JSON(rw, http.StatusCreated, app)
+	c.JSON(rw, http.StatusCreated, configVars)
 }
 
 func (c *ConfigVarsController) List(rw http.ResponseWriter, r *http.Request) {
