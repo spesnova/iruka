@@ -28,12 +28,8 @@ gin-bin
 .DS_Store
 
 #
-# binaries
-#
-artifacts
-
-#
 # iruka artifacts
 #
+artifacts
 iruka
 iruka.yml
