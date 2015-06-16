@@ -34,6 +34,21 @@ func (r *Registry) ConfigVars(appIdentity string) (schema.ConfigVars, error) {
 }
 
 func (r *Registry) UpdateConfigVars(appIdentity string, opts schema.ConfigVars) (schema.ConfigVars, error) {
+	configVars, err := r.ConfigVars(appIdentity)
+	if err != nil {
+		fmt.Println(err.Error())
+		return schema.ConfigVars{}, err
+	}
+
+	// merge key-value to update with current config-vars
+	for k, v := range opts {
+		if v == "" {
+			delete(configVars, k)
+		} else {
+			configVars[k] = v
+		}
+	}
+
 	j, err := marshal(opts)
 	if err != nil {
 		fmt.Println(err.Error())
@@ -47,7 +62,6 @@ func (r *Registry) UpdateConfigVars(appIdentity string, opts schema.ConfigVars) 
 		return schema.ConfigVars{}, err
 	}
 
-	var configVars schema.ConfigVars
 	err = unmarshal(res.Node.Value, &configVars)
 	if err != nil {
 		fmt.Println(err.Error())
