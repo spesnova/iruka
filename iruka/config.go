@@ -22,42 +22,46 @@ var cmdConfig = cli.Command{
 }
 
 var cmdConfigShow = cli.Command{
-	Name:  "show",
-	Usage: "Display config vars for the app",
+	Name:   "show",
+	Action: runConfigShow,
+	Flags:  []cli.Flag{flagAppIdentity},
+	Usage:  "Display config vars for the app",
 	Description: `
-   $ iruka config show <APP>
+   $ iruka config show
 
 EXAMPLE:
 
-   $ iruka config show example
+   $ iruka config show
    FOO: bar
    BAZ: qux
 `,
-	Action: runConfigShow,
 }
 
 var cmdConfigSet = cli.Command{
-	Name:  "set",
-	Usage: "Set config vars to the app",
+	Name:   "set",
+	Action: runConfigSet,
+	Flags:  []cli.Flag{flagAppIdentity},
+	Usage:  "Set config vars to the app",
 	Description: `
-   $ iruka config set <APP> <KEY1>=<VALUE1>,<KEY2>=<VALUE2>
+   $ iruka config set <KEY1>=<VALUE1>,<KEY2>=<VALUE2>
 
 EXAMPLE:
 
-   $ iruka config set example HELLO=world,SOME_FLAG=1
+   $ iruka config set HELLO=world,SOME_FLAG=1
    FOO:       bar
    BAZ:       qux
    HELLO:     world
    SOME_FLAG: 1
 `,
-	Action: runConfigSet,
 }
 
 var cmdConfigUnset = cli.Command{
-	Name:  "unset",
-	Usage: "Remove config vars from app",
+	Name:   "unset",
+	Action: runConfigUnset,
+	Flags:  []cli.Flag{flagAppIdentity},
+	Usage:  "Remove config vars from app",
 	Description: `
-   $ iruka config unset <APP> <KEY1>,<KEY2>
+   $ iruka config unset <KEY1>,<KEY2>
 
 EXAMPLE:
 
@@ -65,16 +69,10 @@ EXAMPLE:
    HELLO:     world
    SOME_FLAG: 1
 `,
-	Action: runConfigUnset,
 }
 
 func runConfigShow(c *cli.Context) {
-	if len(c.Args()) != 1 {
-		cli.ShowCommandHelp(c, "show")
-		os.Exit(1)
-	}
-
-	appIdentity := c.Args().First()
+	appIdentity := getAppIdentity(c)
 
 	res, err := client.ConfigVarsInfo(appIdentity)
 	if err != nil {
@@ -88,15 +86,15 @@ func runConfigShow(c *cli.Context) {
 }
 
 func runConfigSet(c *cli.Context) {
-	if len(c.Args()) != 2 {
+	if len(c.Args()) != 1 {
 		cli.ShowCommandHelp(c, "set")
 		os.Exit(1)
 	}
 
-	appIdentity := c.Args().First()
+	appIdentity := getAppIdentity(c)
 
 	configVars := make(map[string]string)
-	keyValuesString := c.Args()[1]
+	keyValuesString := c.Args().First()
 	keyValues := strings.Split(keyValuesString, ",")
 	for i := range keyValues {
 		keyValue := strings.Split(keyValues[i], "=")
