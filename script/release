@@ -13,7 +13,7 @@ if [ $(basename $BASE_DIRECTORY) != "iruka" ] ; then
   exit 1
 fi
 
-VERSION="v0.1.0"
+VERSION="v0.2.0"
 
 test -d ${BASE_DIRECTORY}/artifacts || mkdir ${BASE_DIRECTORY}/artifacts
 

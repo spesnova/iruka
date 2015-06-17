@@ -18,7 +18,7 @@ func main() {
 	app := cli.NewApp()
 	app.Name = "iruka"
 	app.Usage = "iruka CLI"
-	app.Version = "0.1.0"
+	app.Version = "0.2.0"
 	app.Author = "Seigo Uchida"
 	app.Email = "spesnova@gmail.com"
 	app.Commands = Commands
