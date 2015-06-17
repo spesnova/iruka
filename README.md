@@ -3,6 +3,24 @@ A lightweight container platform.
 
 <img src="iruka.png" height=250px>
 
+## CLI
+
+* [Managing Apps](docs/cli.md#managing-apps)
+ * [Creating an App](docs/cli.md#creating-an-app)
+ * [Listing Apps](docs/cli.md#listing-apps)
+ * [Showing an App](docs/cli.md#showing-an-app-v030) (v0.3.0~)
+ * [Destroying Apps](docs/cli.md#destroying-apps)
+* [Deploying an App](docs/cli.md#deploying-an-app)
+* [Managing Processes](docs/cli.md#managing-processes-containers)
+ * [Listing Processes](docs/cli.md#listing-processes-of-an-app)
+ * [Restarting Processes](docs/cli.md#restarting-processes-of-an-app-v030) (v0.3.0~)
+ * [Scaling Processes of an App](docs/cli.md#scaling-processes-of-an-app-v030) (v0.3.0~)
+* [Managing Config Vars](docs/cli.md#managing-config-vars)
+ * [Setting Config Vars](docs/cli.md#setting-config-vars)
+ * [Showing Config Vars](docs/cli.md#showing-config-vars)
+ * [Unsetting Config Vars](docs/cli.md#unsetting-config-vars)
+* [Running One-Off Process](docs/cli.md#running-one-off-process-v030) (v0.3.0~)
+
 ## HTTP API
 
 * [Errors](docs/api-v1-alpha.md#errors)
