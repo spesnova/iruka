@@ -113,9 +113,12 @@ $ iruka set <KEY>=<VALUE>...
 
 # Example: set a key-value
 $ iruka set FOO=bar
+FOO:   bar
 
 # Example: set multiple key-value
 $ iruka set FOO=bar,BAZ=qux
+FOO:   bar
+BAZ:   qux
 ```
 
 ### Showing Config Vars
