@@ -139,12 +139,12 @@ BAZ:   qux
 $ iruka unset <KEY>...
 
 # Example: unset a key
-$ iruka unsert FOO
+$ iruka unset FOO
 BAR:   baz
 BAZ:   qux
 
 # Example: unset multiple key
-$ iruka unsert FOO,BAR
+$ iruka unset FOO BAR
 BAZ:   qux
 ```
 
@@ -177,4 +177,3 @@ $ iruka rollback
 # Managing Machines
 $ iruka machines
 ```
-
