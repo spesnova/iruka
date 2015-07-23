@@ -14,11 +14,11 @@ var cmdSet = cli.Command{
 	Flags:  []cli.Flag{flagAppIdentity},
 	Usage:  "Set config vars to the app",
 	Description: `
-   $ iruka set <KEY1>=<VALUE1>,<KEY2>=<VALUE2>
+   $ iruka set <KEY1>=<VALUE1> <KEY2>=<VALUE2>
 
 EXAMPLE:
 
-   $ iruka set HELLO=world,SOME_FLAG=1
+   $ iruka set HELLO=world SOME_FLAG=1
    FOO:       bar
    BAZ:       qux
    HELLO:     world
@@ -27,25 +27,23 @@ EXAMPLE:
 }
 
 func runSet(c *cli.Context) {
-	if len(c.Args()) != 1 {
+	if len(c.Args()) < 1 {
 		cli.ShowCommandHelp(c, "set")
 		os.Exit(1)
 	}
 
 	appIdentity := getAppIdentity(c)
-
 	configVars := make(map[string]string)
-	keyValuesString := c.Args().First()
-	keyValues := strings.Split(keyValuesString, ",")
-	for i := range keyValues {
-		keyValue := strings.Split(keyValues[i], "=")
 
-		if len(keyValue) != 2 {
+	for _, arg := range c.Args() {
+		i := strings.Index(arg, "=")
+
+		if i < 0 {
 			cli.ShowCommandHelp(c, "set")
 			os.Exit(1)
 		}
 
-		configVars[keyValue[0]] = keyValue[1]
+		configVars[arg[:i]] = arg[i+1:]
 	}
 
 	res, err := client.ConfigVarsUpdate(appIdentity, configVars)
