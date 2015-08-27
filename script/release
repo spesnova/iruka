@@ -28,13 +28,13 @@ gox -osarch="linux/amd64 darwin/amd64" -output "../artifacts/${VERSION}/{{.OS}}/
 echo ""
 
 echo "==> Compressioning linux artifacts..."
-zip ${BASE_DIRECTORY}/artifacts/${VERSION}/linux/amd64/iruka-${VERSION}-linux-amd64.zip \
-    ${BASE_DIRECTORY}/artifacts/${VERSION}/linux/amd64/{iruka,irukad}
+cd  ${BASE_DIRECTORY}/artifacts/${VERSION}/linux/amd64/
+zip ${BASE_DIRECTORY}/artifacts/${VERSION}/linux/amd64/iruka-${VERSION}-linux-amd64.zip iruka irukad
 echo "Created: artifacts/${VERSION}/linux/amd64/iruka-${VERSION}-linux-amd64.zip"
 echo ""
 
 echo "==> Compressioning darwin artifacts..."
-zip ${BASE_DIRECTORY}/artifacts/${VERSION}/darwin/amd64/iruka-${VERSION}-darwin-amd64.zip \
-    ${BASE_DIRECTORY}/artifacts/${VERSION}/darwin/amd64/{iruka,irukad}
+cd  ${BASE_DIRECTORY}/artifacts/${VERSION}/darwin/amd64/
+zip ${BASE_DIRECTORY}/artifacts/${VERSION}/darwin/amd64/iruka-${VERSION}-darwin-amd64.zip iruka irukad
 echo "Created: artifacts/${VERSION}/darwin/amd64/iruka-${VERSION}-darwin-amd64.zip"
 echo ""
