@@ -1,5 +1,5 @@
 # iruka
-A lightweight container platform.
+A lightweight container platform. Work in progress.
 
 <img src="iruka.png" height=250px>
 
