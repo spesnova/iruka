@@ -3,6 +3,7 @@ package controllers
 import (
 	"encoding/json"
 	"net/http"
+	"os"
 
 	"github.com/gorilla/mux"
 	"github.com/unrolled/render"
@@ -41,12 +42,25 @@ func (c *AppController) Create(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	dopts := schema.DomainCreateOpts{
+		Hostname: app.ID.String() + "." + os.Getenv("DEFAULT_DOMAIN"),
+	}
+
+	_, err = c.Registry.CreateDomain(app.ID.String(), dopts)
+
+	if err != nil {
+		c.JSON(rw, http.StatusInternalServerError, "error")
+		return
+	}
+
 	ropts := schema.RouteCreateOpts{
 		Location: "/.*",
 		Upstream: app.ID.String(),
 	}
 
-	if _, err := c.Registry.CreateRoute(app.ID.String(), ropts); err != nil {
+	_, err = c.Registry.CreateRoute(app.ID.String(), ropts)
+
+	if err != nil {
 		c.JSON(rw, http.StatusInternalServerError, "error")
 		return
 	}
