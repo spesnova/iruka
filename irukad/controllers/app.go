@@ -41,6 +41,16 @@ func (c *AppController) Create(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	ropts := schema.RouteCreateOpts{
+		Location: "/.*",
+		Upstream: app.ID.String(),
+	}
+
+	if _, err := c.Registry.CreateRoute(app.ID.String(), ropts); err != nil {
+		c.JSON(rw, http.StatusInternalServerError, "error")
+		return
+	}
+
 	c.JSON(rw, http.StatusCreated, app)
 }
 
