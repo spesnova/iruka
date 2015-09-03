@@ -11,13 +11,16 @@ import (
 	"github.com/spesnova/iruka/agent"
 	"github.com/spesnova/iruka/irukad/controllers"
 	"github.com/spesnova/iruka/registry"
+	"github.com/spesnova/iruka/router"
 	"github.com/spesnova/iruka/scheduler"
 )
 
 func main() {
 	// Registry
-	machines := registry.DefaultMachines
-	reg := registry.NewRegistry(machines, registry.DefaultKeyPrefix)
+	reg := registry.NewRegistry(registry.DefaultMachines, registry.DefaultKeyPrefix)
+
+	// Sub-domain router
+	rou := router.NewRouter(router.DefaultMachines, router.DefaultKeyPrefix)
 
 	// Scheduler
 	url := scheduler.DefaultAPIURL
@@ -34,13 +37,13 @@ func main() {
 	ren := render.New()
 
 	// Controllers
-	appController := controllers.NewAppController(reg, ren)
+	appController := controllers.NewAppController(reg, ren, rou)
 	containerController := controllers.NewContainerController(reg, ren, sch)
 	configVarsController := controllers.NewConfigVarsController(reg, ren)
 
 	// Router
-	rou := mux.NewRouter()
-	v1rou := rou.PathPrefix("/api/v1-alpha").Subrouter()
+	muxRou := mux.NewRouter()
+	v1rou := muxRou.PathPrefix("/api/v1-alpha").Subrouter()
 
 	// App Resource
 	v1rou.Path("/apps").Methods("POST").HandlerFunc(appController.Create)
@@ -68,7 +71,7 @@ func main() {
 		negroni.NewLogger(),
 	)
 
-	n.UseHandler(rou)
+	n.UseHandler(muxRou)
 
 	go age.Pulse()
 	// Disable retrieving unit state from fleet for now

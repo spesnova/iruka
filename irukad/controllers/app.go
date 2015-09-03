@@ -9,16 +9,18 @@ import (
 	"github.com/unrolled/render"
 
 	"github.com/spesnova/iruka/registry"
+	"github.com/spesnova/iruka/router"
 	"github.com/spesnova/iruka/schema"
 )
 
 type AppController struct {
 	*registry.Registry
 	*render.Render
+	*router.Router
 }
 
-func NewAppController(reg *registry.Registry, ren *render.Render) AppController {
-	return AppController{reg, ren}
+func NewAppController(reg *registry.Registry, ren *render.Render, rou *router.Router) AppController {
+	return AppController{reg, ren, rou}
 }
 
 func (c *AppController) Create(rw http.ResponseWriter, r *http.Request) {
@@ -46,7 +48,7 @@ func (c *AppController) Create(rw http.ResponseWriter, r *http.Request) {
 		Hostname: app.ID.String() + "." + os.Getenv("DEFAULT_DOMAIN"),
 	}
 
-	_, err = c.Registry.CreateDomain(app.ID.String(), dopts)
+	domain, err := c.Registry.CreateDomain(app.ID.String(), dopts)
 
 	if err != nil {
 		c.JSON(rw, http.StatusInternalServerError, "error")
@@ -58,7 +60,14 @@ func (c *AppController) Create(rw http.ResponseWriter, r *http.Request) {
 		Upstream: app.ID.String(),
 	}
 
-	_, err = c.Registry.CreateRoute(app.ID.String(), ropts)
+	route, err := c.Registry.CreateRoute(app.ID.String(), ropts)
+
+	if err != nil {
+		c.JSON(rw, http.StatusInternalServerError, "error")
+		return
+	}
+
+	err = c.Router.AddRoute(domain.Hostname, route.ID.String(), route.Location, route.Upstream)
 
 	if err != nil {
 		c.JSON(rw, http.StatusInternalServerError, "error")
