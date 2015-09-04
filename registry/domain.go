@@ -92,32 +92,30 @@ func (r *Registry) DestroyDomain(appIdentity, domainID string) (schema.Domain, e
 	return domain, nil
 }
 
-func (r *Registry) Domain(appIdentity, domainID string) (schema.Domain, error) {
-	app, err := r.App(appIdentity)
-
-	if err != nil {
-		return schema.Domain{}, err
-	}
-
-	key := path.Join(r.keyPrefix, domainPrefix, app.ID.String(), domainID)
-	res, err := r.etcd.Get(key, false, true)
-
-	if err != nil {
-		if isKeyNotFound(err) {
-			err = nil
-		}
-
-		return schema.Domain{}, err
-	}
-
+func (r *Registry) Domain(appIdentity, domainIdentity string) (schema.Domain, error) {
 	var domain schema.Domain
-	err = unmarshal(res.Node.Value, &domain)
+
+	domains, err := r.Domains(appIdentity)
 
 	if err != nil {
-		return schema.Domain{}, err
+		return domain, err
 	}
 
-	return domain, nil
+	if uuid.Parse(domainIdentity) == nil {
+		for _, domain := range domains {
+			if domain.Hostname == domainIdentity {
+				return domain, nil
+			}
+		}
+	} else {
+		for _, domain := range domains {
+			if uuid.Equal(domain.ID, uuid.Parse(domainIdentity)) {
+				return domain, nil
+			}
+		}
+	}
+
+	return domain, errors.New("No such domain: " + domainIdentity)
 }
 
 func (r *Registry) Domains(appIdentity string) ([]schema.Domain, error) {
