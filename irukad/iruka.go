@@ -40,7 +40,7 @@ func main() {
 	appController := controllers.NewAppController(reg, ren, rou)
 	containerController := controllers.NewContainerController(reg, ren, sch)
 	configVarsController := controllers.NewConfigVarsController(reg, ren)
-	domainController := controllers.NewDomainController(reg, ren)
+	domainController := controllers.NewDomainController(reg, ren, rou)
 
 	// Router
 	muxRou := mux.NewRouter()
