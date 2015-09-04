@@ -3,6 +3,7 @@ package agent
 import (
 	"fmt"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 
@@ -10,6 +11,7 @@ import (
 	"github.com/fsouza/go-dockerclient"
 
 	"github.com/spesnova/iruka/registry"
+	"github.com/spesnova/iruka/router"
 	"github.com/spesnova/iruka/schema"
 )
 
@@ -25,6 +27,7 @@ type Agent interface {
 type IrukaAgent struct {
 	docker  *docker.Client
 	reg     *registry.Registry
+	rou     *router.Router
 	Machine string
 }
 
@@ -76,9 +79,19 @@ func (a *IrukaAgent) Pulse() {
 				PublishedPort: container.Ports[0].PublicPort,
 			}
 
-			_, err := a.reg.UpdateContainerState(name, opts)
+			c, err := a.reg.UpdateContainerState(name, opts)
 			if err != nil {
 				fmt.Println(err.Error())
+			}
+
+			url := "http://" + c.Machine + ":" + strconv.FormatInt(c.PublishedPort, 10)
+
+			if !a.rou.IsServerExists(c.AppID.String(), name) {
+				err = a.rou.AddServer(c.AppID.String(), name, url)
+
+				if err != nil {
+					fmt.Println(err.Error())
+				}
 			}
 		}
 
