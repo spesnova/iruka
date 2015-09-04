@@ -40,6 +40,7 @@ func main() {
 	appController := controllers.NewAppController(reg, ren, rou)
 	containerController := controllers.NewContainerController(reg, ren, sch)
 	configVarsController := controllers.NewConfigVarsController(reg, ren)
+	domainController := controllers.NewDomainController(reg, ren)
 
 	// Router
 	muxRou := mux.NewRouter()
@@ -64,6 +65,12 @@ func main() {
 	// Config Vars Resource
 	v1subrou.Path("/config-vars").Methods("GET").HandlerFunc(configVarsController.Info)
 	v1subrou.Path("/config-vars").Methods("PATCH").HandlerFunc(configVarsController.Update)
+
+	// Domain Resource
+	v1subrou.Path("/domains").Methods("POST").HandlerFunc(domainController.Create)
+	v1subrou.Path("/domains/{identity}").Methods("DELETE").HandlerFunc(domainController.Delete)
+	v1subrou.Path("/domains/{identity}").Methods("GET").HandlerFunc(domainController.Info)
+	v1subrou.Path("/domains").Methods("GET").HandlerFunc(domainController.List)
 
 	// Middleware stack
 	n := negroni.New(

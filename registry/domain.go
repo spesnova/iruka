@@ -31,6 +31,12 @@ func (d Domains) Less(i, j int) bool {
 }
 
 func (r *Registry) CreateDomain(appIdentity string, opts schema.DomainCreateOpts) (schema.Domain, error) {
+	app, err := r.App(appIdentity)
+
+	if err != nil {
+		return schema.Domain{}, err
+	}
+
 	if opts.Hostname == "" {
 		return schema.Domain{}, errors.New("hostname parameter is required, but missing")
 	}
@@ -50,7 +56,7 @@ func (r *Registry) CreateDomain(appIdentity string, opts schema.DomainCreateOpts
 		return schema.Domain{}, err
 	}
 
-	key := path.Join(r.keyPrefix, domainPrefix, appIdentity, domain.ID.String())
+	key := path.Join(r.keyPrefix, domainPrefix, app.ID.String(), domain.ID.String())
 	_, err = r.etcd.Create(key, string(j), 0)
 
 	if err != nil {
@@ -60,20 +66,20 @@ func (r *Registry) CreateDomain(appIdentity string, opts schema.DomainCreateOpts
 	return domain, nil
 }
 
-func (r *Registry) DestroyDomain(appIdentity, domainID string) (schema.Domain, error) {
+func (r *Registry) DestroyDomain(appIdentity, domainIdentity string) (schema.Domain, error) {
 	app, err := r.App(appIdentity)
 
 	if err != nil {
 		return schema.Domain{}, err
 	}
 
-	domain, err := r.Domain(appIdentity, domainID)
+	domain, err := r.Domain(appIdentity, domainIdentity)
 
 	if err != nil {
 		return schema.Domain{}, err
 	}
 
-	key := path.Join(r.keyPrefix, domainPrefix, app.ID.String(), domainID)
+	key := path.Join(r.keyPrefix, domainPrefix, app.ID.String(), domain.ID.String())
 	_, err = r.etcd.Delete(key, true)
 
 	if err != nil {
@@ -86,32 +92,30 @@ func (r *Registry) DestroyDomain(appIdentity, domainID string) (schema.Domain, e
 	return domain, nil
 }
 
-func (r *Registry) Domain(appIdentity, domainID string) (schema.Domain, error) {
-	app, err := r.App(appIdentity)
-
-	if err != nil {
-		return schema.Domain{}, err
-	}
-
-	key := path.Join(r.keyPrefix, domainPrefix, app.ID.String(), domainID)
-	res, err := r.etcd.Get(key, false, true)
-
-	if err != nil {
-		if isKeyNotFound(err) {
-			err = nil
-		}
-
-		return schema.Domain{}, err
-	}
-
+func (r *Registry) Domain(appIdentity, domainIdentity string) (schema.Domain, error) {
 	var domain schema.Domain
-	err = unmarshal(res.Node.Value, &domain)
+
+	domains, err := r.Domains(appIdentity)
 
 	if err != nil {
-		return schema.Domain{}, err
+		return domain, err
 	}
 
-	return domain, nil
+	if uuid.Parse(domainIdentity) == nil {
+		for _, domain := range domains {
+			if domain.Hostname == domainIdentity {
+				return domain, nil
+			}
+		}
+	} else {
+		for _, domain := range domains {
+			if uuid.Equal(domain.ID, uuid.Parse(domainIdentity)) {
+				return domain, nil
+			}
+		}
+	}
+
+	return domain, errors.New("No such domain: " + domainIdentity)
 }
 
 func (r *Registry) Domains(appIdentity string) ([]schema.Domain, error) {
@@ -151,40 +155,4 @@ func (r *Registry) Domains(appIdentity string) ([]schema.Domain, error) {
 	sort.Sort(sort.Reverse(domains))
 
 	return domains, nil
-}
-
-func (r *Registry) UpdateDomain(appIdentity string, domainID string, opts schema.DomainUpdateOpts) (schema.Domain, error) {
-	app, err := r.App(appIdentity)
-
-	if err != nil {
-		return schema.Domain{}, err
-	}
-
-	domain, err := r.Domain(appIdentity, domainID)
-
-	if err != nil {
-		return schema.Domain{}, err
-	}
-
-	if opts.ID.String() == "" {
-		return schema.Domain{}, errors.New("id parameter is required, but missing")
-	}
-
-	if opts.Hostname != "" {
-		domain.Hostname = opts.Hostname
-	}
-
-	j, err := marshal(domain)
-
-	if err != nil {
-		return schema.Domain{}, err
-	}
-
-	key := path.Join(r.keyPrefix, domainPrefix, app.ID.String(), domainID)
-
-	if _, err := r.etcd.Set(key, string(j), 0); err != nil {
-		return schema.Domain{}, err
-	}
-
-	return domain, nil
 }

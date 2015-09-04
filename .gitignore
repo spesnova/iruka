@@ -31,5 +31,6 @@ gin-bin
 # iruka artifacts
 #
 artifacts
-iruka
+iruka/iruka
+irukad/irukad
 iruka.yml
