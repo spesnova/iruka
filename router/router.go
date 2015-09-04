@@ -1,11 +1,15 @@
 package router
 
 import (
+	"encoding/json"
+	"fmt"
 	"os"
 	"path"
 	"strings"
 
 	"github.com/coreos/go-etcd/etcd"
+
+	"github.com/spesnova/iruka/schema"
 )
 
 const (
@@ -32,16 +36,18 @@ func NewRouter(machines, keyPrefix string) *Router {
 	return &Router{etcdClient, keyPrefix}
 }
 
-func (r *Router) AddRoute(host, location, locPath, upstream string) error {
-	pKey := path.Join(r.keyPrefix, "hosts", host, "locations", location, "path")
-	_, err := r.etcd.Create(pKey, locPath, 0)
+func (r *Router) AddBackend(name string) error {
+	backend := schema.VulcandBackend{
+		Type: "http",
+	}
+	j, err := marshal(backend)
 
 	if err != nil {
 		return err
 	}
 
-	uKey := path.Join(r.keyPrefix, "hosts", host, "locations", location, "upstream")
-	_, err = r.etcd.Create(uKey, upstream, 0)
+	key := path.Join(r.keyPrefix, "backends", name, "backend")
+	_, err = r.etcd.Create(key, string(j), 0)
 
 	if err != nil {
 		return err
@@ -50,8 +56,8 @@ func (r *Router) AddRoute(host, location, locPath, upstream string) error {
 	return nil
 }
 
-func (r *Router) RemoveRoute(host, location string) error {
-	key := path.Join(r.keyPrefix, "hosts", host, "locations", location)
+func (r *Router) RemoveBackend(name string) error {
+	key := path.Join(r.keyPrefix, "backends", name, "backend")
 	_, err := r.etcd.Delete(key, true)
 
 	if err != nil {
@@ -61,21 +67,56 @@ func (r *Router) RemoveRoute(host, location string) error {
 	return nil
 }
 
-func (r *Router) UpdateRoute(host, location, locPath, upstream string) error {
-	if locPath != "" {
-		pKey := path.Join(r.keyPrefix, "hosts", host, "locations", location, "path")
-		_, err := r.etcd.Set(pKey, locPath, 0)
-		if err != nil {
-			return err
-		}
+func (r *Router) AddRoute(name, host, location string) error {
+	frontend := schema.VulcandFrontend{
+		Type:      "http",
+		BackendID: name,
+		Route:     routeString(host, location),
+	}
+	j, err := marshal(frontend)
+
+	if err != nil {
+		return err
 	}
 
-	if upstream != "" {
-		uKey := path.Join(r.keyPrefix, "hosts", host, "locations", location, "upstream")
-		_, err := r.etcd.Set(uKey, upstream, 0)
-		if err != nil {
-			return err
-		}
+	key := path.Join(r.keyPrefix, "frontends", name, "frontend")
+	_, err = r.etcd.Create(key, j, 0)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (r *Router) RemoveRoute(name string) error {
+	key := path.Join(r.keyPrefix, "frontends", name, "frontend")
+	_, err := r.etcd.Delete(key, true)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (r *Router) UpdateRoute(name, host, location string) error {
+	frontend := schema.VulcandFrontend{
+		Type:      "http",
+		BackendID: name,
+		Route:     routeString(host, location),
+	}
+	j, err := marshal(frontend)
+
+	if err != nil {
+		return err
+	}
+
+	key := path.Join(r.keyPrefix, "frontends", name, "frontend")
+	_, err = r.etcd.Set(key, j, 0)
+
+	if err != nil {
+		return err
 	}
 
 	return nil
@@ -111,5 +152,25 @@ func (r *Router) RemoveUpstream(upstream string) error {
 		return err
 	}
 
+	return nil
+}
+
+func routeString(hostname, path string) string {
+	return fmt.Sprintf("Host(`%s`) && PathRegexp(`%s`)", hostname, path)
+}
+
+func marshal(obj interface{}) (string, error) {
+	encoded, err := json.Marshal(obj)
+	if err != nil {
+		return "", fmt.Errorf("unable to JSON-serialize object: %s", err)
+	}
+	return string(encoded), nil
+}
+
+func unmarshal(val string, obj interface{}) error {
+	err := json.Unmarshal([]byte(val), &obj)
+	if err != nil {
+		return fmt.Errorf("unable to JSON-deserialize object: %s", err)
+	}
 	return nil
 }
