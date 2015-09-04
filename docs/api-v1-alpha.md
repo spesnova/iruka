@@ -565,4 +565,198 @@ HTTP/1.1 200 OK
 ```
 
 
+## Domain
+
+Domain attached to an app on iruka.
+
+### Attributes
+
+| Name | Type | Description | Example |
+| ------- | ------- | ------- | ------- |
+| **created_at** | *date-time* | when domain was created | `"2012-01-01T12:00:00Z"` |
+| **id** | *uuid* | unique identifier of domain | `"01234567-89ab-cdef-0123-456789abcdef"` |
+| **hostname** | *string* | domain hostname | `"example.com"` |
+| **updated_at** | *date-time* | when domain was updated | `"2012-01-01T12:00:00Z"` |
+
+### Domain Create
+
+Create a new domain.
+
+```
+POST /apps/{app_id_or_name}/domains
+```
+
+#### Optional Parameters
+
+| Name | Type | Description | Example |
+| ------- | ------- | ------- | ------- |
+| **hostname** | *string* | domain hostname | `"example.com"` |
+
+
+#### Curl Example
+
+```bash
+$ curl -n -X POST https://<your-iruka-server>.com/api/v1-alpha/apps/$APP_ID_OR_NAME/domains \
+  -H "Content-Type: application/json" \
+ \
+  -d '{
+  "hostname": "example.com"
+}'
+```
+
+
+#### Response Example
+
+```
+HTTP/1.1 201 Created
+```
+
+```json
+{
+  "created_at": "2012-01-01T12:00:00Z",
+  "id": "01234567-89ab-cdef-0123-456789abcdef",
+  "hostname": "example.com",
+  "updated_at": "2012-01-01T12:00:00Z"
+}
+```
+
+### Domain Delete
+
+Delete an existing domain.
+
+```
+DELETE /apps/{app_id_or_name}/domains/{domain_id_or_hostname}
+```
+
+
+#### Curl Example
+
+```bash
+$ curl -n -X DELETE https://<your-iruka-server>.com/api/v1-alpha/apps/$APP_ID_OR_NAME/domains/$DOMAIN_ID_OR_HOSTNAME \
+  -H "Content-Type: application/json" \
+```
+
+
+#### Response Example
+
+```
+HTTP/1.1 200 OK
+```
+
+```json
+{
+  "created_at": "2012-01-01T12:00:00Z",
+  "id": "01234567-89ab-cdef-0123-456789abcdef",
+  "hostname": "example.com",
+  "updated_at": "2012-01-01T12:00:00Z"
+}
+```
+
+### Domain Info
+
+Info for existing domain.
+
+```
+GET /apps/{app_id_or_name}/domains/{domain_id_or_hostname}
+```
+
+
+#### Curl Example
+
+```bash
+$ curl -n https://<your-iruka-server>.com/api/v1-alpha/apps/$APP_ID_OR_NAME/domains/$DOMAIN_ID_OR_HOSTNAME
+```
+
+
+#### Response Example
+
+```
+HTTP/1.1 200 OK
+```
+
+```json
+{
+  "created_at": "2012-01-01T12:00:00Z",
+  "id": "01234567-89ab-cdef-0123-456789abcdef",
+  "hostname": "example.com",
+  "updated_at": "2012-01-01T12:00:00Z"
+}
+```
+
+### Domain List
+
+List existing domains.
+
+```
+GET /apps/{app_id_or_name}/domains
+```
+
+
+#### Curl Example
+
+```bash
+$ curl -n https://<your-iruka-server>.com/api/v1-alpha/apps/$APP_ID_OR_NAME/domains
+```
+
+
+#### Response Example
+
+```
+HTTP/1.1 200 OK
+```
+
+```json
+[
+  {
+    "created_at": "2012-01-01T12:00:00Z",
+    "id": "01234567-89ab-cdef-0123-456789abcdef",
+    "hostname": "example.com",
+    "updated_at": "2012-01-01T12:00:00Z"
+  }
+]
+```
+
+### Domain Update
+
+Update an existing domain.
+
+```
+PATCH /domains/{domain_id_or_hostname}
+```
+
+#### Optional Parameters
+
+| Name | Type | Description | Example |
+| ------- | ------- | ------- | ------- |
+| **hostname** | *string* | domain hostname | `"example.com"` |
+
+
+#### Curl Example
+
+```bash
+$ curl -n -X PATCH https://<your-iruka-server>.com/api/v1-alpha/domains/$DOMAIN_ID_OR_HOSTNAME \
+  -H "Content-Type: application/json" \
+ \
+  -d '{
+  "hostname": "example.com"
+}'
+```
+
+
+#### Response Example
+
+```
+HTTP/1.1 200 OK
+```
+
+```json
+{
+  "created_at": "2012-01-01T12:00:00Z",
+  "id": "01234567-89ab-cdef-0123-456789abcdef",
+  "hostname": "example.com",
+  "updated_at": "2012-01-01T12:00:00Z"
+}
+```
+
+
 
