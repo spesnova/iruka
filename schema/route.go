@@ -8,6 +8,7 @@ import (
 
 type Route struct {
 	ID        uuid.UUID `json:"id"`
+	AppID     uuid.UUID `json:"app_id"`
 	Location  string    `json:"location"`
 	Upstream  string    `json:"upstream"`
 	CreatedAt time.Time `json:"created_at"`
