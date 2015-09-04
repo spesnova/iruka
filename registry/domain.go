@@ -31,6 +31,12 @@ func (d Domains) Less(i, j int) bool {
 }
 
 func (r *Registry) CreateDomain(appIdentity string, opts schema.DomainCreateOpts) (schema.Domain, error) {
+	app, err := r.App(appIdentity)
+
+	if err != nil {
+		return schema.Domain{}, err
+	}
+
 	if opts.Hostname == "" {
 		return schema.Domain{}, errors.New("hostname parameter is required, but missing")
 	}
@@ -50,7 +56,7 @@ func (r *Registry) CreateDomain(appIdentity string, opts schema.DomainCreateOpts
 		return schema.Domain{}, err
 	}
 
-	key := path.Join(r.keyPrefix, domainPrefix, appIdentity, domain.ID.String())
+	key := path.Join(r.keyPrefix, domainPrefix, app.ID.String(), domain.ID.String())
 	_, err = r.etcd.Create(key, string(j), 0)
 
 	if err != nil {

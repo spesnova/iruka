@@ -7,7 +7,7 @@ import (
 
 	"github.com/codegangsta/cli"
 
-	_ "github.com/wantedly/kujira/schema"
+	"github.com/spesnova/iruka/schema"
 )
 
 var cmdDomain = cli.Command{
@@ -82,7 +82,26 @@ func runDomainList(c *cli.Context) {
 }
 
 func runDomainAdd(c *cli.Context) {
+	if len(c.Args()) < 1 {
+		cli.ShowCommandHelp(c, "add")
+		os.Exit(1)
+	}
 
+	appIdentity := getAppIdentity(c)
+	hostname := c.Args().First()
+	opts := schema.DomainCreateOpts{
+		Hostname: hostname,
+	}
+
+	fmt.Printf("Adding %s to %s...", hostname, appIdentity)
+	_, err := client.DomainCreate(appIdentity, opts)
+
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+
+	fmt.Println("done")
 }
 
 func runDomainRemove(c *cli.Context) {
