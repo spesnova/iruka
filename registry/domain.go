@@ -66,20 +66,20 @@ func (r *Registry) CreateDomain(appIdentity string, opts schema.DomainCreateOpts
 	return domain, nil
 }
 
-func (r *Registry) DestroyDomain(appIdentity, domainID string) (schema.Domain, error) {
+func (r *Registry) DestroyDomain(appIdentity, domainIdentity string) (schema.Domain, error) {
 	app, err := r.App(appIdentity)
 
 	if err != nil {
 		return schema.Domain{}, err
 	}
 
-	domain, err := r.Domain(appIdentity, domainID)
+	domain, err := r.Domain(appIdentity, domainIdentity)
 
 	if err != nil {
 		return schema.Domain{}, err
 	}
 
-	key := path.Join(r.keyPrefix, domainPrefix, app.ID.String(), domainID)
+	key := path.Join(r.keyPrefix, domainPrefix, app.ID.String(), domain.ID.String())
 	_, err = r.etcd.Delete(key, true)
 
 	if err != nil {
@@ -157,14 +157,14 @@ func (r *Registry) Domains(appIdentity string) ([]schema.Domain, error) {
 	return domains, nil
 }
 
-func (r *Registry) UpdateDomain(appIdentity string, domainID string, opts schema.DomainUpdateOpts) (schema.Domain, error) {
+func (r *Registry) UpdateDomain(appIdentity string, domainIdentity string, opts schema.DomainUpdateOpts) (schema.Domain, error) {
 	app, err := r.App(appIdentity)
 
 	if err != nil {
 		return schema.Domain{}, err
 	}
 
-	domain, err := r.Domain(appIdentity, domainID)
+	domain, err := r.Domain(appIdentity, domainIdentity)
 
 	if err != nil {
 		return schema.Domain{}, err
@@ -184,7 +184,7 @@ func (r *Registry) UpdateDomain(appIdentity string, domainID string, opts schema
 		return schema.Domain{}, err
 	}
 
-	key := path.Join(r.keyPrefix, domainPrefix, app.ID.String(), domainID)
+	key := path.Join(r.keyPrefix, domainPrefix, app.ID.String(), domain.ID.String())
 
 	if _, err := r.etcd.Set(key, string(j), 0); err != nil {
 		return schema.Domain{}, err
