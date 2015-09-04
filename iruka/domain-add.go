@@ -45,7 +45,3 @@ func runDomainAdd(c *cli.Context) {
 
 	fmt.Println("done")
 }
-
-func runDomainRemove(c *cli.Context) {
-
-}
