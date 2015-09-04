@@ -65,19 +65,6 @@ links:
   method: GET
   rel: instances
   title: List
-- description: Update an existing domain.
-  href: "/domains/{(%2Fschemata%2Fdomain%23%2Fdefinitions%2Fidentity)}"
-  method: PATCH
-  rel: update
-  schema:
-    properties: {
-      "hostname": {
-        "$ref": "/schemata/domain#/definitions/hostname"
-      }
-    }
-    type:
-    - object
-  title: Update
 properties:
   created_at:
     "$ref": "/schemata/domain#/definitions/created_at"

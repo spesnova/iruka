@@ -156,39 +156,3 @@ func (r *Registry) Domains(appIdentity string) ([]schema.Domain, error) {
 
 	return domains, nil
 }
-
-func (r *Registry) UpdateDomain(appIdentity string, domainIdentity string, opts schema.DomainUpdateOpts) (schema.Domain, error) {
-	app, err := r.App(appIdentity)
-
-	if err != nil {
-		return schema.Domain{}, err
-	}
-
-	domain, err := r.Domain(appIdentity, domainIdentity)
-
-	if err != nil {
-		return schema.Domain{}, err
-	}
-
-	if opts.ID.String() == "" {
-		return schema.Domain{}, errors.New("id parameter is required, but missing")
-	}
-
-	if opts.Hostname != "" {
-		domain.Hostname = opts.Hostname
-	}
-
-	j, err := marshal(domain)
-
-	if err != nil {
-		return schema.Domain{}, err
-	}
-
-	key := path.Join(r.keyPrefix, domainPrefix, app.ID.String(), domain.ID.String())
-
-	if _, err := r.etcd.Set(key, string(j), 0); err != nil {
-		return schema.Domain{}, err
-	}
-
-	return domain, nil
-}

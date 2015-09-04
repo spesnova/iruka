@@ -88,35 +88,3 @@ func (c *DomainController) List(rw http.ResponseWriter, r *http.Request) {
 
 	c.JSON(rw, http.StatusOK, domains)
 }
-
-func (c *DomainController) Update(rw http.ResponseWriter, r *http.Request) {
-	defer r.Body.Close()
-
-	vars := mux.Vars(r)
-	appIdentity := vars["appIdentity"]
-	identity := vars["identity"]
-
-	var opts schema.DomainUpdateOpts
-	err := json.NewDecoder(r.Body).Decode(&opts)
-
-	if err != nil {
-		c.JSON(rw, http.StatusInternalServerError, err.Error())
-		return
-	}
-
-	domain, err := c.reg.Domain(appIdentity, identity)
-
-	if err != nil {
-		c.JSON(rw, http.StatusInternalServerError, err.Error())
-		return
-	}
-
-	domain, err = c.reg.UpdateDomain(appIdentity, identity, opts)
-
-	if err != nil {
-		c.JSON(rw, http.StatusInternalServerError, err.Error())
-		return
-	}
-
-	c.JSON(rw, http.StatusAccepted, domain)
-}

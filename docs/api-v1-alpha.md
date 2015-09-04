@@ -716,47 +716,5 @@ HTTP/1.1 200 OK
 ]
 ```
 
-### Domain Update
-
-Update an existing domain.
-
-```
-PATCH /domains/{domain_id_or_hostname}
-```
-
-#### Optional Parameters
-
-| Name | Type | Description | Example |
-| ------- | ------- | ------- | ------- |
-| **hostname** | *string* | domain hostname | `"example.com"` |
-
-
-#### Curl Example
-
-```bash
-$ curl -n -X PATCH https://<your-iruka-server>.com/api/v1-alpha/domains/$DOMAIN_ID_OR_HOSTNAME \
-  -H "Content-Type: application/json" \
- \
-  -d '{
-  "hostname": "example.com"
-}'
-```
-
-
-#### Response Example
-
-```
-HTTP/1.1 200 OK
-```
-
-```json
-{
-  "created_at": "2012-01-01T12:00:00Z",
-  "id": "01234567-89ab-cdef-0123-456789abcdef",
-  "hostname": "example.com",
-  "updated_at": "2012-01-01T12:00:00Z"
-}
-```
-
 
 

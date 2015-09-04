@@ -559,23 +559,6 @@
           "method": "GET",
           "rel": "instances",
           "title": "List"
-        },
-        {
-          "description": "Update an existing domain.",
-          "href": "/domains/{(%23%2Fdefinitions%2Fdomain%2Fdefinitions%2Fidentity)}",
-          "method": "PATCH",
-          "rel": "update",
-          "schema": {
-            "properties": {
-              "hostname": {
-                "$ref": "#/definitions/domain/definitions/hostname"
-              }
-            },
-            "type": [
-              "object"
-            ]
-          },
-          "title": "Update"
         }
       ],
       "properties": {

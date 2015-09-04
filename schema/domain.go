@@ -16,8 +16,3 @@ type Domain struct {
 type DomainCreateOpts struct {
 	Hostname string `json:"hostname"`
 }
-
-type DomainUpdateOpts struct {
-	ID       uuid.UUID `json:"id"`
-	Hostname string    `json:"hostname"`
-}

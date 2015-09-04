@@ -71,7 +71,6 @@ func main() {
 	v1subrou.Path("/domains/{identity}").Methods("DELETE").HandlerFunc(domainController.Delete)
 	v1subrou.Path("/domains/{identity}").Methods("GET").HandlerFunc(domainController.Info)
 	v1subrou.Path("/domains").Methods("GET").HandlerFunc(domainController.List)
-	v1subrou.Path("/domains/{identity}").Methods("PATCH").HandlerFunc(domainController.Update)
 
 	// Middleware stack
 	n := negroni.New(
