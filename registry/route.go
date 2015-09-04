@@ -31,13 +31,11 @@ func (r Routes) Less(i, j int) bool {
 }
 
 func (r *Registry) CreateRoute(appIdentity string, opts schema.RouteCreateOpts) (schema.Route, error) {
-	// TODO(dtan4):
-	//   etcd does not reflect inserted item immediately...
-	// app, err := r.App(appIdentity)
+	app, err := r.App(appIdentity)
 
-	// if err != nil {
-	// 	return schema.Route{}, err
-	// }
+	if err != nil {
+		return schema.Route{}, err
+	}
 
 	if opts.Location == "" {
 		return schema.Route{}, errors.New("location parameter is required, but missing")
@@ -51,6 +49,7 @@ func (r *Registry) CreateRoute(appIdentity string, opts schema.RouteCreateOpts) 
 	currentTime := time.Now()
 	route := schema.Route{
 		ID:        id,
+		AppID:     app.ID,
 		Location:  opts.Location,
 		Upstream:  opts.Upstream,
 		CreatedAt: currentTime,
@@ -63,8 +62,7 @@ func (r *Registry) CreateRoute(appIdentity string, opts schema.RouteCreateOpts) 
 		return schema.Route{}, err
 	}
 
-	// key := path.Join(r.keyPrefix, routePrefix, app.ID.String(), route.ID.String())
-	key := path.Join(r.keyPrefix, routePrefix, appIdentity, route.ID.String())
+	key := path.Join(r.keyPrefix, routePrefix, route.ID.String())
 
 	if _, err = r.etcd.Create(key, string(j), 0); err != nil {
 		return schema.Route{}, err
@@ -73,68 +71,67 @@ func (r *Registry) CreateRoute(appIdentity string, opts schema.RouteCreateOpts) 
 	return route, nil
 }
 
-func (r *Registry) DestroyRoute(appIdentity, routeID string) (schema.Route, error) {
-	app, err := r.App(appIdentity)
+func (r *Registry) DestroyRoute(identity string) (schema.Route, error) {
+	route, err := r.Route(identity)
 
 	if err != nil {
 		return schema.Route{}, err
 	}
 
-	route, err := r.Route(appIdentity, routeID)
-
-	if err != nil {
-		return schema.Route{}, err
-	}
-
-	key := path.Join(r.keyPrefix, routePrefix, app.ID.String(), routeID)
+	key := path.Join(r.keyPrefix, routePrefix, route.ID.String())
 	_, err = r.etcd.Delete(key, true)
 
 	if err != nil {
-		if isKeyNotFound(err) {
-			err = nil
-		}
-		return schema.Route{}, err
+		return schema.Route{}, errors.New("Failed to delete route: " + route.ID.String())
 	}
 
 	return route, nil
 }
 
-func (r *Registry) Route(appIdentity, routeID string) (schema.Route, error) {
-	app, err := r.App(appIdentity)
-
-	if err != nil {
-		return schema.Route{}, err
-	}
-
-	key := path.Join(r.keyPrefix, routePrefix, app.ID.String(), routeID)
-	res, err := r.etcd.Get(key, false, true)
-
-	if err != nil {
-		if isKeyNotFound(err) {
-			err = nil
-		}
-
-		return schema.Route{}, err
-	}
-
+func (r *Registry) Route(identity string) (schema.Route, error) {
 	var route schema.Route
-	err = unmarshal(res.Node.Value, &route)
+
+	routes, err := r.Routes()
+
+	if err != nil {
+		return route, err
+	}
+
+	if uuid.Parse(identity) == nil {
+		return route, errors.New("No such route: " + identity)
+	} else {
+		for _, route := range routes {
+			if uuid.Equal(route.ID, uuid.Parse(identity)) {
+				return route, nil
+			}
+		}
+	}
+
+	return route, errors.New("No such route: " + identity)
+}
+
+func (r *Registry) RouteFilteredByApp(appIdentity, identity string) (schema.Route, error) {
+	route, err := r.Route(identity)
 
 	if err != nil {
 		return schema.Route{}, err
 	}
 
-	return route, nil
-}
-
-func (r *Registry) Routes(appIdentity string) ([]schema.Route, error) {
 	app, err := r.App(appIdentity)
 
 	if err != nil {
-		return nil, err
+		return schema.Route{}, err
 	}
 
-	key := path.Join(r.keyPrefix, routePrefix, app.ID.String())
+	if uuid.Equal(route.AppID, app.ID) {
+		return route, nil
+	}
+
+	return route, errors.New("No such route: " + identity)
+}
+
+func (r *Registry) Routes() ([]schema.Route, error) {
+	key := path.Join(r.keyPrefix, routePrefix)
 	res, err := r.etcd.Get(key, false, true)
 
 	if err != nil {
@@ -166,14 +163,36 @@ func (r *Registry) Routes(appIdentity string) ([]schema.Route, error) {
 	return routes, nil
 }
 
-func (r *Registry) UpdateRoute(appIdentity string, routeID string, opts schema.RouteUpdateOpts) (schema.Route, error) {
+func (r *Registry) RoutesFilteredByApp(appIdentity string) ([]schema.Route, error) {
+	var routes []schema.Route
+
 	app, err := r.App(appIdentity)
 
 	if err != nil {
-		return schema.Route{}, err
+		return nil, err
 	}
 
-	route, err := r.Route(appIdentity, routeID)
+	rs, err := r.Routes()
+
+	if err != nil {
+		return nil, err
+	}
+
+	if rs == nil {
+		return nil, nil
+	}
+
+	for _, r := range rs {
+		if uuid.Equal(r.AppID, app.ID) {
+			routes = append(routes, r)
+		}
+	}
+
+	return routes, nil
+}
+
+func (r *Registry) UpdateRoute(appIdentity, identity string, opts schema.RouteUpdateOpts) (schema.Route, error) {
+	route, err := r.RouteFilteredByApp(appIdentity, identity)
 
 	if err != nil {
 		return schema.Route{}, err
@@ -197,7 +216,7 @@ func (r *Registry) UpdateRoute(appIdentity string, routeID string, opts schema.R
 		return schema.Route{}, err
 	}
 
-	key := path.Join(r.keyPrefix, routePrefix, app.ID.String(), routeID)
+	key := path.Join(r.keyPrefix, routePrefix, identity)
 
 	if _, err := r.etcd.Set(key, string(j), 0); err != nil {
 		return schema.Route{}, err
