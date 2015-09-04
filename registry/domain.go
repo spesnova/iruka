@@ -45,6 +45,7 @@ func (r *Registry) CreateDomain(appIdentity string, opts schema.DomainCreateOpts
 	currentTime := time.Now()
 	domain := schema.Domain{
 		ID:        id,
+		AppID:     app.ID,
 		Hostname:  opts.Hostname,
 		CreatedAt: currentTime,
 		UpdatedAt: currentTime,
@@ -56,7 +57,7 @@ func (r *Registry) CreateDomain(appIdentity string, opts schema.DomainCreateOpts
 		return schema.Domain{}, err
 	}
 
-	key := path.Join(r.keyPrefix, domainPrefix, app.ID.String(), domain.ID.String())
+	key := path.Join(r.keyPrefix, domainPrefix, domain.ID.String())
 	_, err = r.etcd.Create(key, string(j), 0)
 
 	if err != nil {
@@ -66,66 +67,71 @@ func (r *Registry) CreateDomain(appIdentity string, opts schema.DomainCreateOpts
 	return domain, nil
 }
 
-func (r *Registry) DestroyDomain(appIdentity, domainIdentity string) (schema.Domain, error) {
-	app, err := r.App(appIdentity)
+func (r *Registry) DestroyDomain(identity string) (schema.Domain, error) {
+	domain, err := r.Domain(identity)
 
 	if err != nil {
 		return schema.Domain{}, err
 	}
 
-	domain, err := r.Domain(appIdentity, domainIdentity)
-
-	if err != nil {
-		return schema.Domain{}, err
-	}
-
-	key := path.Join(r.keyPrefix, domainPrefix, app.ID.String(), domain.ID.String())
+	key := path.Join(r.keyPrefix, domainPrefix, domain.ID.String())
 	_, err = r.etcd.Delete(key, true)
 
 	if err != nil {
-		if isKeyNotFound(err) {
-			err = nil
-		}
-		return schema.Domain{}, err
+		return schema.Domain{}, errors.New("Failed to delete domain: " + domain.ID.String())
 	}
 
 	return domain, nil
 }
 
-func (r *Registry) Domain(appIdentity, domainIdentity string) (schema.Domain, error) {
+func (r *Registry) Domain(identity string) (schema.Domain, error) {
 	var domain schema.Domain
 
-	domains, err := r.Domains(appIdentity)
+	domains, err := r.Domains()
 
 	if err != nil {
 		return domain, err
 	}
 
-	if uuid.Parse(domainIdentity) == nil {
+	if uuid.Parse(identity) == nil {
 		for _, domain := range domains {
-			if domain.Hostname == domainIdentity {
+			if domain.Hostname == identity {
 				return domain, nil
 			}
 		}
 	} else {
 		for _, domain := range domains {
-			if uuid.Equal(domain.ID, uuid.Parse(domainIdentity)) {
+			if uuid.Equal(domain.ID, uuid.Parse(identity)) {
 				return domain, nil
 			}
 		}
 	}
 
-	return domain, errors.New("No such domain: " + domainIdentity)
+	return domain, errors.New("No such domain: " + identity)
 }
 
-func (r *Registry) Domains(appIdentity string) ([]schema.Domain, error) {
+func (r *Registry) DomainFilteredByApp(appIdentity, identity string) (schema.Domain, error) {
+	domain, err := r.Domain(identity)
+
+	if err != nil {
+		return schema.Domain{}, err
+	}
+
 	app, err := r.App(appIdentity)
 
 	if err != nil {
-		return nil, err
+		return schema.Domain{}, err
 	}
 
-	key := path.Join(r.keyPrefix, domainPrefix, app.ID.String())
+	if uuid.Equal(domain.AppID, app.ID) {
+		return domain, nil
+	}
+
+	return domain, errors.New("No such domain: " + identity)
+}
+
+func (r *Registry) Domains() ([]schema.Domain, error) {
+	key := path.Join(r.keyPrefix, domainPrefix)
 	res, err := r.etcd.Get(key, false, true)
 
 	if err != nil {
@@ -153,6 +159,34 @@ func (r *Registry) Domains(appIdentity string) ([]schema.Domain, error) {
 	}
 
 	sort.Sort(sort.Reverse(domains))
+
+	return domains, nil
+}
+
+func (r *Registry) DomainsFilteredByApp(appIdentity string) ([]schema.Domain, error) {
+	var domains []schema.Domain
+
+	app, err := r.App(appIdentity)
+
+	if err != nil {
+		return nil, err
+	}
+
+	ds, err := r.Domains()
+
+	if err != nil {
+		return nil, err
+	}
+
+	if ds == nil {
+		return nil, nil
+	}
+
+	for _, d := range ds {
+		if uuid.Equal(d.AppID, app.ID) {
+			domains = append(domains, d)
+		}
+	}
 
 	return domains, nil
 }

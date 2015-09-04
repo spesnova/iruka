@@ -47,7 +47,13 @@ func (c *DomainController) Delete(rw http.ResponseWriter, r *http.Request) {
 	appIdentity := vars["appIdentity"]
 	identity := vars["identity"]
 
-	domain, err := c.reg.DestroyDomain(appIdentity, identity)
+	domain, err := c.reg.DomainFilteredByApp(appIdentity, identity)
+
+	if err != nil {
+		c.JSON(rw, http.StatusInternalServerError, err.Error())
+	}
+
+	_, err = c.reg.DestroyDomain(identity)
 
 	if err != nil {
 		c.JSON(rw, http.StatusInternalServerError, err.Error())
@@ -61,7 +67,7 @@ func (c *DomainController) Info(rw http.ResponseWriter, r *http.Request) {
 	appIdentity := vars["appIdentity"]
 	identity := vars["identity"]
 
-	domain, err := c.reg.Domain(appIdentity, identity)
+	domain, err := c.reg.DomainFilteredByApp(appIdentity, identity)
 
 	if err != nil {
 		c.JSON(rw, http.StatusInternalServerError, err.Error())
@@ -74,7 +80,7 @@ func (c *DomainController) List(rw http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	appIdentity := vars["appIdentity"]
 
-	domains, err := c.reg.Domains(appIdentity)
+	domains, err := c.reg.DomainsFilteredByApp(appIdentity)
 
 	if err != nil {
 		c.JSON(rw, http.StatusInternalServerError, err.Error())
