@@ -95,6 +95,8 @@ func (a *IrukaAgent) Pulse() {
 					fmt.Println(err.Error())
 					continue
 				}
+
+				fmt.Printf("Registered new container to %s: %s\n", c.AppID.String(), name)
 			}
 		}
 
