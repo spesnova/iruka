@@ -77,7 +77,7 @@ func (r *Router) AddServer(appID, containerName, url string) error {
 		return err
 	}
 
-	key := path.Join(r.keyPrefix, "backends", appID, "backend", containerName)
+	key := path.Join(r.keyPrefix, "backends", appID, "servers", containerName)
 	_, err = r.etcd.Create(key, string(j), 0)
 
 	if err != nil {
@@ -88,7 +88,7 @@ func (r *Router) AddServer(appID, containerName, url string) error {
 }
 
 func (r *Router) RemoveServer(appID, containerName string) error {
-	key := path.Join(r.keyPrefix, "backends", appID, "backend", containerName)
+	key := path.Join(r.keyPrefix, "backends", appID, "servers", containerName)
 	_, err := r.etcd.Delete(key, true)
 
 	if err != nil {
@@ -99,7 +99,7 @@ func (r *Router) RemoveServer(appID, containerName string) error {
 }
 
 func (r *Router) IsServerExists(appID, containerName string) bool {
-	key := path.Join(r.keyPrefix, "backends", appID, "backend", containerName)
+	key := path.Join(r.keyPrefix, "backends", appID, "servers", containerName)
 	_, err := r.etcd.Get(key, false, false)
 
 	return err != nil
