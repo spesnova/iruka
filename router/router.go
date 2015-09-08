@@ -129,7 +129,7 @@ func (r *Router) AddRoute(name, host, location string) error {
 }
 
 func (r *Router) RemoveRoute(name, host string) error {
-	key := path.Join(r.keyPrefix, "frontends", fmt.Sprintf("%s-%s", name, host), "frontend")
+	key := path.Join(r.keyPrefix, "frontends", fmt.Sprintf("%s-%s", name, host))
 	_, err := r.etcd.Delete(key, true)
 
 	if err != nil {
