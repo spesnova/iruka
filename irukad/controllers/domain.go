@@ -47,18 +47,15 @@ func (c *DomainController) Create(rw http.ResponseWriter, r *http.Request) {
 		c.JSON(rw, http.StatusInternalServerError, err.Error())
 	}
 
-	// TODO(dtan4):
-	//   Add multiple routes
-	route := routes[0]
-	err = c.rou.UpdateRoute(app.ID.String(), opts.Hostname, route.Location)
+	for _, route := range routes {
+		// TODO(dtan4):
+		//   Remove duplicates (most routes are the same)
+		err := c.rou.AddRoute(app.ID.String(), opts.Hostname, route.Location)
 
-	// for _, route := range routes {
-	// 	err := c.rou.UpdateRoute(app.ID.String(), opts.Hostname, route.Location)
-
-	// 	if err != nil {
-	// 		c.JSON(rw, http.StatusInternalServerError, err.Error())
-	// 	}
-	// }
+		if err != nil {
+			c.JSON(rw, http.StatusInternalServerError, err.Error())
+		}
+	}
 
 	domain, err := c.reg.CreateDomain(appIdentity, opts)
 
@@ -74,23 +71,23 @@ func (c *DomainController) Delete(rw http.ResponseWriter, r *http.Request) {
 	appIdentity := vars["appIdentity"]
 	identity := vars["identity"]
 
+	app, err := c.reg.App(appIdentity)
+
+	if err != nil {
+		c.JSON(rw, http.StatusInternalServerError, err.Error())
+	}
+
 	domain, err := c.reg.DomainFilteredByApp(appIdentity, identity)
 
 	if err != nil {
 		c.JSON(rw, http.StatusInternalServerError, err.Error())
 	}
 
-	// TODO(dtan4):
-	//   Remove multiple routes
-	// routes, err := c.reg.RoutesFilteredByApp(appIdentity)
+	err = c.rou.RemoveRoute(app.ID.String(), domain.Hostname)
 
-	// if err != nil {
-	// 	c.JSON(rw, http.StatusInternalServerError, err.Error())
-	// }
-
-	// for _, route := range routes {
-
-	// }
+	if err != nil {
+		c.JSON(rw, http.StatusInternalServerError, err.Error())
+	}
 
 	_, err = c.reg.DestroyDomain(identity)
 
