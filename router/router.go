@@ -102,7 +102,7 @@ func (r *Router) IsServerExists(appID, containerName string) bool {
 	key := path.Join(r.keyPrefix, "backends", appID, "servers", containerName)
 	_, err := r.etcd.Get(key, false, false)
 
-	return err != nil
+	return err == nil
 }
 
 func (r *Router) AddRoute(name, host, location string) error {
