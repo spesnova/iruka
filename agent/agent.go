@@ -83,6 +83,7 @@ func (a *IrukaAgent) Pulse() {
 			c, err := a.reg.UpdateContainerState(name, opts)
 			if err != nil {
 				fmt.Println(err.Error())
+				continue
 			}
 
 			url := "http://" + c.Machine + ":" + strconv.FormatInt(c.PublishedPort, 10)
@@ -92,6 +93,7 @@ func (a *IrukaAgent) Pulse() {
 
 				if err != nil {
 					fmt.Println(err.Error())
+					continue
 				}
 			}
 		}
