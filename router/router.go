@@ -37,6 +37,8 @@ func NewRouter(machines, keyPrefix string) *Router {
 	return &Router{etcdClient, keyPrefix}
 }
 
+// TODO(dtan4):
+//   Divide by upstream (blue/green)
 func (r *Router) AddBackend(name string) error {
 	backend := schema.VulcandBackend{
 		Type: "http",
@@ -68,6 +70,8 @@ func (r *Router) RemoveBackend(name string) error {
 	return nil
 }
 
+// TODO(dtan4):
+//   Divide by upstream (blue/green)
 func (r *Router) AddServer(appID, containerName, url string) error {
 	server := schema.VulcandServer{
 		URL: url,
