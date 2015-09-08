@@ -65,7 +65,11 @@ func (a *IrukaAgent) Pulse() {
 			// Regist only containers that managed by iruka
 			s := strings.Split(name, ".")
 			if uuid.Parse((s[len(s)-1])) == nil {
-				fmt.Println("Skipped to register:", name)
+				// Vulcand is always running with iruka
+				if name != "irukad" && name != "vulcand" {
+					fmt.Println("Skipped to register:", name)
+				}
+
 				continue
 			}
 
