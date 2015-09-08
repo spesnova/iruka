@@ -161,39 +161,6 @@ func (r *Router) UpdateRoute(name, host, location string) error {
 	return nil
 }
 
-func (r *Router) RemoveHost(host string) error {
-	key := path.Join(r.keyPrefix, "hosts", host)
-	_, err := r.etcd.Delete(key, true)
-
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (r *Router) AddUpstream(upstream string) error {
-	key := path.Join(r.keyPrefix, "upstreams", upstream)
-	_, err := r.etcd.SetDir(key, 0)
-
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (r *Router) RemoveUpstream(upstream string) error {
-	key := path.Join(r.keyPrefix, "upstreams", upstream)
-	_, err := r.etcd.Delete(key, true)
-
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
 func routeString(hostname, path string) string {
 	return fmt.Sprintf("Host(`%s`) && PathRegexp(`%s`)", hostname, path)
 }
