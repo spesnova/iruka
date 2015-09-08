@@ -1,6 +1,7 @@
 package router
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -202,7 +203,9 @@ func marshal(obj interface{}) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("unable to JSON-serialize object: %s", err)
 	}
-	return string(encoded), nil
+
+	// To print '&'
+	return string(bytes.Replace(encoded, []byte("\\u0026"), []byte("&"), -1)), nil
 }
 
 func unmarshal(val string, obj interface{}) error {
