@@ -15,10 +15,10 @@ fi
 
 echo "==> Generating docs..."
 cd $BASE_DIRECTORY
-bin/prmd combine \
+bundle exec prmd combine \
   --meta schema/meta.yml \
   schema/schemata/ > schema/schema.json
-bin/prmd doc \
+bundle exec prmd doc \
   --prepend docs/api-v1-alpha-header.md \
   schema/schema.json > docs/api-v1-alpha.md
 echo "    Successfully generated"

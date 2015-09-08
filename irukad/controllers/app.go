@@ -3,21 +3,24 @@ package controllers
 import (
 	"encoding/json"
 	"net/http"
+	"os"
 
 	"github.com/gorilla/mux"
 	"github.com/unrolled/render"
 
 	"github.com/spesnova/iruka/registry"
+	"github.com/spesnova/iruka/router"
 	"github.com/spesnova/iruka/schema"
 )
 
 type AppController struct {
 	*registry.Registry
 	*render.Render
+	*router.Router
 }
 
-func NewAppController(reg *registry.Registry, ren *render.Render) AppController {
-	return AppController{reg, ren}
+func NewAppController(reg *registry.Registry, ren *render.Render, rou *router.Router) AppController {
+	return AppController{reg, ren, rou}
 }
 
 func (c *AppController) Create(rw http.ResponseWriter, r *http.Request) {
@@ -37,6 +40,43 @@ func (c *AppController) Create(rw http.ResponseWriter, r *http.Request) {
 		//c.JSON(rw, http.StatusBadRequest, "error")
 
 		// TODO (spesnova): response better error
+		c.JSON(rw, http.StatusInternalServerError, "error")
+		return
+	}
+
+	dopts := schema.DomainCreateOpts{
+		Hostname: app.ID.String() + "." + os.Getenv("DEFAULT_DOMAIN"),
+	}
+
+	domain, err := c.Registry.CreateDomain(app.ID.String(), dopts)
+
+	if err != nil {
+		c.JSON(rw, http.StatusInternalServerError, "error")
+		return
+	}
+
+	ropts := schema.RouteCreateOpts{
+		Location: "/.*",
+		Upstream: app.ID.String(),
+	}
+
+	route, err := c.Registry.CreateRoute(app.ID.String(), ropts)
+
+	if err != nil {
+		c.JSON(rw, http.StatusInternalServerError, "error")
+		return
+	}
+
+	err = c.Router.AddBackend(app.ID.String())
+
+	if err != nil {
+		c.JSON(rw, http.StatusInternalServerError, "error")
+		return
+	}
+
+	err = c.Router.AddRoute(app.ID.String(), domain.Hostname, route.Location)
+
+	if err != nil {
 		c.JSON(rw, http.StatusInternalServerError, "error")
 		return
 	}

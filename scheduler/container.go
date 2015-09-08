@@ -69,6 +69,7 @@ func (s *Scheduler) containerToUnitOptions(c schema.Container, cv schema.ConfigV
 		// Service section example:
 		//
 		//   [Service]
+		//   TimeoutStartSec=0
 		//   ExecStartPre=/usr/bin/docker pull quay.io/spesnova/example:latest
 		//   ExecStartPre=-/usr/bin/docker kill hello.web.a888f12a-0806-11e5-b898-5cf93896cc38
 		//   ExecStartPre=-/usr/bin/docker rm hello.web.a888f12a-0806-11e5-b898-5cf93896cc38
@@ -81,6 +82,11 @@ func (s *Scheduler) containerToUnitOptions(c schema.Container, cv schema.ConfigV
 		//   ExecStop=/usr/bin/docker rm -f hello.web.a888f12a-0806-11e5-b898-5cf93896cc38
 		//   Restart=on-failure
 		//
+		&fleet.UnitOption{
+			Section: "Service",
+			Name:    "TimeoutStartSec",
+			Value:   "0",
+		},
 		&fleet.UnitOption{
 			Section: "Service",
 			Name:    "ExecStartPre",
