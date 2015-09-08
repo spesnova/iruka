@@ -67,7 +67,14 @@ func (c *AppController) Create(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = c.Router.AddRoute(domain.Hostname, route.ID.String(), route.Location, route.Upstream)
+	err = c.Router.AddBackend(app.ID.String())
+
+	if err != nil {
+		c.JSON(rw, http.StatusInternalServerError, "error")
+		return
+	}
+
+	err = c.Router.AddRoute(app.ID.String(), domain.Hostname, route.Location)
 
 	if err != nil {
 		c.JSON(rw, http.StatusInternalServerError, "error")

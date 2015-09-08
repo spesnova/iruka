@@ -3,6 +3,7 @@ package agent
 import (
 	"fmt"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 
@@ -10,6 +11,7 @@ import (
 	"github.com/fsouza/go-dockerclient"
 
 	"github.com/spesnova/iruka/registry"
+	"github.com/spesnova/iruka/router"
 	"github.com/spesnova/iruka/schema"
 )
 
@@ -25,10 +27,11 @@ type Agent interface {
 type IrukaAgent struct {
 	docker  *docker.Client
 	reg     *registry.Registry
+	rou     *router.Router
 	Machine string
 }
 
-func NewAgent(host, machine string, reg *registry.Registry) Agent {
+func NewAgent(host, machine string, reg *registry.Registry, rou *router.Router) Agent {
 	if os.Getenv("IRUKA_DOCKER_HOST") != "" {
 		host = os.Getenv("IRUKA_DOCKER_HOST")
 	}
@@ -44,6 +47,7 @@ func NewAgent(host, machine string, reg *registry.Registry) Agent {
 	return &IrukaAgent{
 		docker:  client,
 		reg:     reg,
+		rou:     rou,
 		Machine: machine,
 	}
 }
@@ -61,7 +65,11 @@ func (a *IrukaAgent) Pulse() {
 			// Regist only containers that managed by iruka
 			s := strings.Split(name, ".")
 			if uuid.Parse((s[len(s)-1])) == nil {
-				fmt.Println("Skipped to register:", name)
+				// Vulcand is always running with iruka
+				if name != "irukad" && name != "vulcand" {
+					fmt.Println("Skipped to register:", name)
+				}
+
 				continue
 			}
 
@@ -76,9 +84,23 @@ func (a *IrukaAgent) Pulse() {
 				PublishedPort: container.Ports[0].PublicPort,
 			}
 
-			_, err := a.reg.UpdateContainerState(name, opts)
+			c, err := a.reg.UpdateContainerState(name, opts)
 			if err != nil {
 				fmt.Println(err.Error())
+				continue
+			}
+
+			url := "http://" + c.Machine + ":" + strconv.FormatInt(c.PublishedPort, 10)
+
+			if !a.rou.IsServerExists(c.AppID.String(), name) {
+				err = a.rou.AddServer(c.AppID.String(), name, url)
+
+				if err != nil {
+					fmt.Println(err.Error())
+					continue
+				}
+
+				fmt.Printf("Registered new container to %s: %s\n", c.AppID.String(), name)
 			}
 		}
 

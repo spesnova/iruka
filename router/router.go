@@ -1,11 +1,16 @@
 package router
 
 import (
+	"bytes"
+	"encoding/json"
+	"fmt"
 	"os"
 	"path"
 	"strings"
 
 	"github.com/coreos/go-etcd/etcd"
+
+	"github.com/spesnova/iruka/schema"
 )
 
 const (
@@ -32,16 +37,20 @@ func NewRouter(machines, keyPrefix string) *Router {
 	return &Router{etcdClient, keyPrefix}
 }
 
-func (r *Router) AddRoute(host, location, locPath, upstream string) error {
-	pKey := path.Join(r.keyPrefix, "hosts", host, "locations", location, "path")
-	_, err := r.etcd.Create(pKey, locPath, 0)
+// TODO(dtan4):
+//   Divide by upstream (blue/green)
+func (r *Router) AddBackend(name string) error {
+	backend := schema.VulcandBackend{
+		Type: "http",
+	}
+	j, err := marshal(backend)
 
 	if err != nil {
 		return err
 	}
 
-	uKey := path.Join(r.keyPrefix, "hosts", host, "locations", location, "upstream")
-	_, err = r.etcd.Create(uKey, upstream, 0)
+	key := path.Join(r.keyPrefix, "backends", name, "backend")
+	_, err = r.etcd.Create(key, string(j), 0)
 
 	if err != nil {
 		return err
@@ -50,8 +59,8 @@ func (r *Router) AddRoute(host, location, locPath, upstream string) error {
 	return nil
 }
 
-func (r *Router) RemoveRoute(host, location string) error {
-	key := path.Join(r.keyPrefix, "hosts", host, "locations", location)
+func (r *Router) RemoveBackend(name string) error {
+	key := path.Join(r.keyPrefix, "backends", name, "backend")
 	_, err := r.etcd.Delete(key, true)
 
 	if err != nil {
@@ -61,28 +70,30 @@ func (r *Router) RemoveRoute(host, location string) error {
 	return nil
 }
 
-func (r *Router) UpdateRoute(host, location, locPath, upstream string) error {
-	if locPath != "" {
-		pKey := path.Join(r.keyPrefix, "hosts", host, "locations", location, "path")
-		_, err := r.etcd.Set(pKey, locPath, 0)
-		if err != nil {
-			return err
-		}
+// TODO(dtan4):
+//   Divide by upstream (blue/green)
+func (r *Router) AddServer(appID, containerName, url string) error {
+	server := schema.VulcandServer{
+		URL: url,
+	}
+	j, err := marshal(server)
+
+	if err != nil {
+		return err
 	}
 
-	if upstream != "" {
-		uKey := path.Join(r.keyPrefix, "hosts", host, "locations", location, "upstream")
-		_, err := r.etcd.Set(uKey, upstream, 0)
-		if err != nil {
-			return err
-		}
+	key := path.Join(r.keyPrefix, "backends", appID, "servers", containerName)
+	_, err = r.etcd.Create(key, string(j), 0)
+
+	if err != nil {
+		return err
 	}
 
 	return nil
 }
 
-func (r *Router) RemoveHost(host string) error {
-	key := path.Join(r.keyPrefix, "hosts", host)
+func (r *Router) RemoveServer(appID, containerName string) error {
+	key := path.Join(r.keyPrefix, "backends", appID, "servers", containerName)
 	_, err := r.etcd.Delete(key, true)
 
 	if err != nil {
@@ -92,9 +103,27 @@ func (r *Router) RemoveHost(host string) error {
 	return nil
 }
 
-func (r *Router) AddUpstream(upstream string) error {
-	key := path.Join(r.keyPrefix, "upstreams", upstream)
-	_, err := r.etcd.SetDir(key, 0)
+func (r *Router) IsServerExists(appID, containerName string) bool {
+	key := path.Join(r.keyPrefix, "backends", appID, "servers", containerName)
+	_, err := r.etcd.Get(key, false, false)
+
+	return err == nil
+}
+
+func (r *Router) AddRoute(name, host, location string) error {
+	frontend := schema.VulcandFrontend{
+		Type:      "http",
+		BackendID: name,
+		Route:     routeString(host, location),
+	}
+	j, err := marshal(frontend)
+
+	if err != nil {
+		return err
+	}
+
+	key := path.Join(r.keyPrefix, "frontends", fmt.Sprintf("%s-%s", name, host), "frontend")
+	_, err = r.etcd.Create(key, j, 0)
 
 	if err != nil {
 		return err
@@ -103,13 +132,57 @@ func (r *Router) AddUpstream(upstream string) error {
 	return nil
 }
 
-func (r *Router) RemoveUpstream(upstream string) error {
-	key := path.Join(r.keyPrefix, "upstreams", upstream)
+func (r *Router) RemoveRoute(name, host string) error {
+	key := path.Join(r.keyPrefix, "frontends", fmt.Sprintf("%s-%s", name, host))
 	_, err := r.etcd.Delete(key, true)
 
 	if err != nil {
 		return err
 	}
 
+	return nil
+}
+
+func (r *Router) UpdateRoute(name, host, location string) error {
+	frontend := schema.VulcandFrontend{
+		Type:      "http",
+		BackendID: name,
+		Route:     routeString(host, location),
+	}
+	j, err := marshal(frontend)
+
+	if err != nil {
+		return err
+	}
+
+	key := path.Join(r.keyPrefix, "frontends", name, "frontend")
+	_, err = r.etcd.Set(key, j, 0)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func routeString(hostname, path string) string {
+	return fmt.Sprintf("Host(`%s`) && PathRegexp(`%s`)", hostname, path)
+}
+
+func marshal(obj interface{}) (string, error) {
+	encoded, err := json.Marshal(obj)
+	if err != nil {
+		return "", fmt.Errorf("unable to JSON-serialize object: %s", err)
+	}
+
+	// To print '&'
+	return string(bytes.Replace(encoded, []byte("\\u0026"), []byte("&"), -1)), nil
+}
+
+func unmarshal(val string, obj interface{}) error {
+	err := json.Unmarshal([]byte(val), &obj)
+	if err != nil {
+		return fmt.Errorf("unable to JSON-deserialize object: %s", err)
+	}
 	return nil
 }

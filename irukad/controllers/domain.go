@@ -35,6 +35,12 @@ func (c *DomainController) Create(rw http.ResponseWriter, r *http.Request) {
 		c.JSON(rw, http.StatusInternalServerError, err.Error())
 	}
 
+	app, err := c.reg.App(appIdentity)
+
+	if err != nil {
+		c.JSON(rw, http.StatusInternalServerError, err.Error())
+	}
+
 	routes, err := c.reg.RoutesFilteredByApp(appIdentity)
 
 	if err != nil {
@@ -42,7 +48,9 @@ func (c *DomainController) Create(rw http.ResponseWriter, r *http.Request) {
 	}
 
 	for _, route := range routes {
-		err := c.rou.AddRoute(opts.Hostname, route.ID.String(), route.Location, route.Upstream)
+		// TODO(dtan4):
+		//   Remove duplicates (most routes are the same)
+		err := c.rou.AddRoute(app.ID.String(), opts.Hostname, route.Location)
 
 		if err != nil {
 			c.JSON(rw, http.StatusInternalServerError, err.Error())
@@ -63,24 +71,22 @@ func (c *DomainController) Delete(rw http.ResponseWriter, r *http.Request) {
 	appIdentity := vars["appIdentity"]
 	identity := vars["identity"]
 
+	app, err := c.reg.App(appIdentity)
+
+	if err != nil {
+		c.JSON(rw, http.StatusInternalServerError, err.Error())
+	}
+
 	domain, err := c.reg.DomainFilteredByApp(appIdentity, identity)
 
 	if err != nil {
 		c.JSON(rw, http.StatusInternalServerError, err.Error())
 	}
 
-	routes, err := c.reg.RoutesFilteredByApp(appIdentity)
+	err = c.rou.RemoveRoute(app.ID.String(), domain.Hostname)
 
 	if err != nil {
 		c.JSON(rw, http.StatusInternalServerError, err.Error())
-	}
-
-	for _, route := range routes {
-		err := c.rou.RemoveRoute(domain.Hostname, route.Location)
-
-		if err != nil {
-			c.JSON(rw, http.StatusInternalServerError, err.Error())
-		}
 	}
 
 	_, err = c.reg.DestroyDomain(identity)

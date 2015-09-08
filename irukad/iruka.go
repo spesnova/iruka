@@ -31,7 +31,7 @@ func main() {
 	if machine == "" {
 		log.Fatal("IRUKA_MACHINE is required, but missing")
 	}
-	age := agent.NewAgent(agent.DefaultHost, machine, reg)
+	age := agent.NewAgent(agent.DefaultHost, machine, reg, rou)
 
 	// Render
 	ren := render.New()
