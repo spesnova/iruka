@@ -31,7 +31,7 @@ type IrukaAgent struct {
 	Machine string
 }
 
-func NewAgent(host, machine string, reg *registry.Registry) Agent {
+func NewAgent(host, machine string, reg *registry.Registry, rou *router.Router) Agent {
 	if os.Getenv("IRUKA_DOCKER_HOST") != "" {
 		host = os.Getenv("IRUKA_DOCKER_HOST")
 	}
@@ -47,6 +47,7 @@ func NewAgent(host, machine string, reg *registry.Registry) Agent {
 	return &IrukaAgent{
 		docker:  client,
 		reg:     reg,
+		rou:     rou,
 		Machine: machine,
 	}
 }
